@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import ProfessionalList from './components/ProfessionalList';
-import Dashboard from './components/Dashboard';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 
-export default function App() {
-  const [view, setView] = useState('browse'); 
-  const [selectedProfessional, setSelectedProfessional] = useState(null);
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 
+function App() {
   return (
-    <div style={{ padding: 20, fontFamily: 'system-ui, Arial' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1>Online Appointment Booking System</h1>
-        <div>
-          <button onClick={() => setView('browse')} style={{ marginRight: 10 }}>Browse</button>
-          <button onClick={() => setView('dashboard')}>Professional Dashboard</button>
-        </div>
-      </header>
-
-      <main>
-        {view === 'browse' && (
-          <ProfessionalList onSelect={(p) => setSelectedProfessional(p)} selected={selectedProfessional} />
-        )}
-
-        {view === 'dashboard' && <Dashboard />}
-      </main>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;

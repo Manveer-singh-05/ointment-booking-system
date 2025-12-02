@@ -6,18 +6,20 @@ const bodyParser = require("body-parser");
 const professionalRoutes = require("./routes/professionalRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const slotRoutes = require("./routes/slotRoutes");
+const authRoutes = require("./routes/authRoutes");  // <-- NEW
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ Connect MongoDB here
+// MongoDB Connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/appointmentDB")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
-// ✅ Use Routes
+// Routes
+app.use("/auth", authRoutes);                    // <-- ADD THIS
 app.use("/professionals", professionalRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/slots", slotRoutes);
