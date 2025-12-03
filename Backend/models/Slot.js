@@ -1,14 +1,23 @@
 const mongoose = require("mongoose");
 
-const SlotSchema = new mongoose.Schema({
-  professionalId: { type: mongoose.Schema.Types.ObjectId, ref: "Professional" },
-  serviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
-  startIso: String,
-  durationMinutes: Number,
-  status: {
-    type: String,
-    default: "available"
+const slotSchema = new mongoose.Schema({
+  professionalId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Professional",
+    required: true
+  },
+  date: {
+    type: String, // YYYY-MM-DD
+    required: true
+  },
+  time: {
+    type: String, // "10:00 AM", "2:30 PM"
+    required: true
+  },
+  isBooked: {
+    type: Boolean,
+    default: false
   }
-});
+}, { timestamps: true });
 
-module.exports = mongoose.model("Slot", SlotSchema);
+module.exports = mongoose.model("Slot", slotSchema);

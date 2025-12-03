@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 
-const ProfessionalSchema = new mongoose.Schema({
-  name: String,
-  bio: String
-});
+const professionalSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  specialization: { type: String, required: true },
+  description: { type: String },
+  // optionally an image URL
+  image: { type: String, default: "" }
+}, { timestamps: true });
 
-module.exports = mongoose.model("Professional", ProfessionalSchema);
+module.exports = mongoose.model("Professional", professionalSchema);
