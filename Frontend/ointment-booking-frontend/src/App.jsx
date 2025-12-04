@@ -7,6 +7,10 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./ProtectedRoute";
+import AboutUs from "./pages/AboutUs";
+
+
+
 
 function AppLayout() {
   const location = useLocation();
@@ -53,6 +57,14 @@ function AppLayout() {
               <Profile />
             </ProtectedRoute>
           }
+        />
+        <Route
+        path="/about"
+        element={
+          <ProtectedRoute>
+            <AboutUs/>
+          </ProtectedRoute>
+        }
         />
       </Routes>
     </>
