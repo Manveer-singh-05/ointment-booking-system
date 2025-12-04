@@ -4,13 +4,14 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const user = JSON.parse(localStorage.getItem("user")); // 👈 ADD THIS
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
   };
 
-  // Function to check if page is active
   const isActive = (path) =>
     location.pathname === path ? "text-blue-300 font-semibold" : "text-white";
 
@@ -43,8 +44,17 @@ export default function Navbar() {
         <Link to="/profile" className={`${isActive("/profile")} hover:text-blue-300 transition`}>
           Profile
         </Link>
-        <Link to="/appointments" className="hover:text-blue-300">Appointments</Link>
 
+        <Link to="/appointments" className="hover:text-blue-300">
+          Appointments
+        </Link>
+
+        {/* ⭐ ADMIN LINK (visible only if user.role === "admin") */}
+        {user?.role === "admin" && (
+          <Link to="/admin" className="hover:text-blue-300">
+            Admin Panel
+          </Link>
+        )}
 
         <button
           onClick={handleLogout}

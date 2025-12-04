@@ -55,6 +55,8 @@ export default function Dashboard() {
         {filteredData.map((pro) => (
           <div
             key={pro._id}
+            onClick={() => navigate(`/professional/${pro._id}`)}
+
             className="
               bg-white/30 backdrop-blur-xl border border-white/40
               p-6 rounded-3xl shadow-xl hover:shadow-[0_0_40px_rgba(0,0,0,0.2)]
@@ -79,7 +81,11 @@ export default function Dashboard() {
             </p>
 
             <button
-              onClick={() => navigate(`/book/${pro._id}`)}
+              // onClick={() => navigate(`/book/${pro._id}`)}
+               onClick={(e) => {
+      e.stopPropagation(); // prevents card click from triggering
+      navigate(`/book/${pro._id}`);
+    }}
               className="
                 mt-5 w-full bg-blue-600 text-white py-2 rounded-xl
                 hover:bg-blue-700 hover:scale-[1.03] active:scale-[0.98]
