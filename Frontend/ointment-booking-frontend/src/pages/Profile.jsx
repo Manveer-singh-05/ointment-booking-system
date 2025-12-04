@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import EditProfileModal from "../components/EditProfileModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showChangePass, setShowChangePass] = useState(false);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -10,94 +14,123 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-24 flex justify-center px-4">
+    <div
+      className="min-h-screen bg-cover bg-center pt-24 flex justify-center  items-start px-4"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f')",
+      }}
+    >
+      {/* GLASS CARD */}
+      {/* <div className="w-full max-w-4xl bg-white/20 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-3xl p-12 animate-fadeUp"> */}
+      <div className="
+    w-full max-w-4xl
+    bg-white/20
+    backdrop-blur-2xl
+    border border-white/30
+    rounded-3xl
+    p-12
+    animate-fadeUp
 
-      <div className="w-full max-w-4xl bg-white shadow-xl rounded-3xl p-10">
+    shadow-[0_8px_40px_rgba(0,0,0,0.25)]
+    transition-all duration-500
+    hover:scale-[1.01]
+    hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]
+    float-animation
+  "
+      >
+        {/* TITLE SECTION */}
+        <div className="text-left">
+          <h1 className="text-4xl font-bold text-gray-900 drop-shadow">
+            Welcome, {user?.name || "User"} 👋
+          </h1>
 
-        {/* PROFILE IMAGE + NAME + ROLE */}
-        <div className="flex flex-col items-center">
-          {/* PROFILE IMAGE */}
+          <p className="text-gray-700 mt-3 max-w-lg">
+            Manage your personal details, update profile information, and keep
+            your account up to date — all in one place.
+          </p>
+        </div>
+
+        <div className="w-full border-b border-white/30 my-8"></div>
+
+        {/* PROFILE IMAGE & INFO */}
+        <div className="flex flex-col md:flex-row items-center gap-10">
+          {/* IMAGE */}
           <div className="relative">
             <img
-              src={user?.photo || "https://cdn-icons-png.flaticon.com/512/848/848006.png"}
-              alt="Profile"
-              className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-md"
+              src={
+                user?.photo ||
+                "https://cdn-icons-png.flaticon.com/512/848/848006.png"
+              }
+              className="w-40 h-40 rounded-full border-4 border-white/40 shadow-xl object-cover"
             />
 
-            {/* Camera Icon */}
             <button className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full shadow hover:bg-blue-700 transition">
               📷
             </button>
           </div>
 
-          <h2 className="text-3xl font-bold text-gray-900 mt-4">
-            {user?.name || "User Name"}
-          </h2>
+          {/* DETAILS */}
+          <div className="text-gray-900 space-y-4 text-lg">
+            <p>
+              <span className="font-semibold">Email:</span> {user?.email}
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span>{" "}
+              {user?.phone || "Not Added"}
+            </p>
 
-          <p className="text-gray-600 text-lg mt-1">
-            {user?.role || "Student"}
-          </p>
-
-          {/* Divider */}
-          <div className="w-full border-b mt-6"></div>
-        </div>
-
-        {/* DETAILS GRID */}
-        <div className="mt-8 bg-gray-50 rounded-xl p-8 shadow-inner">
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
-
-            {/* EMAIL */}
             <div>
-              <p className="font-semibold text-gray-500">Email</p>
-              <p className="mt-1">{user?.email || "Not Available"}</p>
-            </div>
-
-            {/* PHONE */}
-            <div>
-              <p className="font-semibold text-gray-500">Phone</p>
-              <p className="mt-1">{user?.phone || "Not Added"}</p>
-            </div>
-
-            {/* BIO */}
-            <div className="md:col-span-2">
-              <p className="font-semibold text-gray-500">Bio</p>
-              <p className="mt-1">
-                {user?.bio || "No bio added yet. Add more info about yourself."}
+              <p className="font-semibold">Bio:</p>
+              <p className="text-gray-800">
+                {user?.bio ||
+                  "No bio added yet. Add more information about yourself."}
               </p>
             </div>
 
-            {/* LAST LOGIN */}
-            <div>
-              <p className="font-semibold text-gray-500">Last Login</p>
-              <p className="mt-1">
-                {user?.lastLogin || "Not recorded"}
-              </p>
-            </div>
-
+            <p>
+              <span className="font-semibold">Last Login:</span>{" "}
+              {user?.lastLogin || "Not recorded"}
+            </p>
           </div>
         </div>
 
-        {/* ACTION BUTTONS */}
-        <div className="flex flex-wrap gap-4 justify-center mt-8">
-
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition flex items-center gap-2">
+        {/* BUTTONS */}
+        <div className="flex flex-wrap gap-4 justify-center mt-10">
+          <button
+            onClick={() => setShowEdit(true)}
+            className="px-6 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+          >
             ✏ Edit Profile
           </button>
 
-          <button className="px-6 py-3 bg-white border border-blue-600 text-blue-600 rounded-lg shadow hover:bg-blue-50 transition flex items-center gap-2">
+          <button
+            onClick={() => setShowChangePass(true)}
+            className="px-6 py-3 bg-purple-600 text-white rounded-xl shadow hover:bg-purple-700 transition"
+          >
             🔐 Change Password
           </button>
 
           <Link
             to="/dashboard"
-            className="px-6 py-3 bg-gray-200 rounded-lg shadow hover:bg-gray-300 transition flex items-center gap-2"
+            className="px-6 py-3 bg-gray-200/50 backdrop-blur-md border border-white/30 rounded-xl shadow hover:bg-gray-300 transition"
           >
             ← Back to Dashboard
           </Link>
-
         </div>
 
+        {/* MODALS */}
+        {showEdit && (
+          <EditProfileModal
+            user={user}
+            onClose={() => setShowEdit(false)}
+            onUpdate={(newData) => setUser(newData)}
+          />
+        )}
+
+        {showChangePass && (
+          <ChangePasswordModal onClose={() => setShowChangePass(false)} />
+        )}
       </div>
     </div>
   );

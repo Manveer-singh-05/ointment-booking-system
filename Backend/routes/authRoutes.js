@@ -2,6 +2,8 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const authMiddleware = require("../middleware/authMiddleware");
+
 
 const router = express.Router();
 const JWT_SECRET = "your-secret-key";
@@ -55,6 +57,58 @@ router.post("/login", async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ---------------- UPDATE PROFILE ----------------
+router.put("/update-profile", authMiddleware, async (req, res) => {
+  try {
+    const { name, phone, bio } = req.body;
+
+    // Find user from JWT token
+    const user = await User.findById(req.user.id);
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Update fields
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (bio) user.bio = bio;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        bio: user.bio || ""
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error updating profile" });
+  }
+});
+
+router.post("/change-password", authMiddleware, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+
+  try {
+    const user = await User.findById(req.user.id);
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) return res.status(400).json({ message: "Old password incorrect" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
