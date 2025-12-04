@@ -15,6 +15,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import AboutUs from "./pages/AboutUs";
 import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
+import ProfessionalDetails from "./pages/ProfessionalDetails";
+
+
+
 
 function AppLayout() {
   const location = useLocation();
@@ -62,6 +66,7 @@ function AppLayout() {
             </ProtectedRoute>
           }
         />
+        <Route path="/professional/:id" element={<ProfessionalDetails />} />
         <Route
           path="/about"
           element={
