@@ -118,7 +118,7 @@ export default function AboutUs() {
         src="https://cdn-icons-png.flaticon.com/512/848/848006.png"
         className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
       />
-      <h3 className="text-xl font-semibold text-white mt-4">Creator 2 Name</h3>
+      <h3 className="text-xl font-semibold text-white mt-4">Shubham</h3>
       <p className="text-gray-200 text-sm mt-2">
         Backend + API specialist — ensuring secure, fast, and reliable system performance.
       </p>
@@ -139,7 +139,7 @@ export default function AboutUs() {
         src="https://cdn-icons-png.flaticon.com/512/848/848006.png"
         className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
       />
-      <h3 className="text-xl font-semibold text-white mt-4">Creator 3 Name</h3>
+      <h3 className="text-xl font-semibold text-white mt-4">Vansh Sharma</h3>
       <p className="text-gray-200 text-sm mt-2">
         UI/UX designer — creating modern, intuitive and seamless user experiences.
       </p>

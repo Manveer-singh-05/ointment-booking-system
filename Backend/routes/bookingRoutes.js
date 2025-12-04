@@ -1,73 +1,98 @@
 const express = require("express");
-const Booking = require("../models/Booking");
 const Slot = require("../models/Slot");
+const Booking = require("../models/Booking");
+const Professional = require("../models/Professional");
 
 const router = express.Router();
 
-// POST /bookings
+// ---------------------- CREATE BOOKING ----------------------
 router.post("/", async (req, res) => {
-  const { slotId, clientName, clientEmail, notes } = req.body;
+  try {
+    const { professionalId, date, time, userId } = req.body;
 
-  const slot = await Slot.findById(slotId);
-  if (!slot) return res.status(404).json({ error: "Slot not found" });
-  if (slot.status !== "available")
-    return res.status(400).json({ error: "Slot not available" });
+    if (!professionalId || !date || !time || !userId) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
 
-  const booking = await Booking.create({
-    slotId,
-    professionalId: slot.professionalId,
-    clientName,
-    clientEmail,
-    notes,
-  });
+    // Step 1: Check if slot exists
+    let slot = await Slot.findOne({ professionalId, date, time });
 
-  slot.status = "reserved";
-  await slot.save();
+    // Step 2: If slot DOESN'T exist → create it
+    if (!slot) {
+      slot = await Slot.create({
+        professionalId,
+        date,
+        time,
+      });
+    }
 
-  res.status(201).json(booking);
+    // Step 3: If already booked → deny
+    if (slot.isBooked) {
+      return res.status(400).json({ message: "Slot already booked" });
+    }
+
+    // Step 4: Create booking
+    const booking = await Booking.create({
+      slotId: slot._id,
+      professionalId,
+      clientName: "User",
+      clientEmail: "user@gmail.com",
+      status: "confirmed",
+    });
+
+    // Step 5: Mark slot as booked
+    slot.isBooked = true;
+    await slot.save();
+
+    res.json({
+      message: "Appointment booked successfully",
+      booking,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Booking failed" });
+  }
 });
 
-// GET /bookings
-router.get("/", async (req, res) => {
-  const { professionalId } = req.query;
-  const filter = professionalId ? { professionalId } : {};
+// ---------------------- GET USER'S BOOKINGS ----------------------
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const bookings = await Booking.find()
+      .populate("slotId")
+      .populate("professionalId");
 
-  const bookings = await Booking.find(filter)
-    .populate({
-      path: "slotId",
-      populate: { path: "serviceId" },
-    })
-    .sort({ createdAt: -1 });
-
-  res.json(bookings);
+    res.json(bookings);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching bookings" });
+  }
 });
 
-// POST /bookings/:id/confirm
-router.post("/:id/confirm", async (req, res) => {
-  const booking = await Booking.findById(req.params.id);
-  if (!booking)
-    return res.status(404).json({ error: "Booking not found" });
+// ---------------------- CANCEL BOOKING ----------------------
+router.put("/cancel/:id", async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
 
-  booking.status = "confirmed";
-  await booking.save();
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
 
-  await Slot.findByIdAndUpdate(booking.slotId, { status: "booked" });
+    // Free slot
+    const slot = await Slot.findById(booking.slotId);
+    if (slot) {
+      slot.isBooked = false;
+      await slot.save();
+    }
 
-  res.json(booking);
-});
+    // Update booking status
+    booking.status = "cancelled";
+    await booking.save();
 
-// POST /bookings/:id/cancel
-router.post("/:id/cancel", async (req, res) => {
-  const booking = await Booking.findById(req.params.id);
-  if (!booking)
-    return res.status(404).json({ error: "Booking not found" });
+    res.json({ message: "Appointment cancelled successfully" });
 
-  booking.status = "cancelled";
-  await booking.save();
-
-  await Slot.findByIdAndUpdate(booking.slotId, { status: "available" });
-
-  res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ message: "Error cancelling booking" });
+  }
 });
 
 module.exports = router;

@@ -18,6 +18,28 @@ router.get("/", async (req, res) => {
 
   res.json(data);
 });
+// GET /professionals/:id  → Get a single professional
+router.get("/:id", async (req, res) => {
+  try {
+    const pro = await Professional.findById(req.params.id);
+
+    if (!pro) {
+      return res.status(404).json({ message: "Professional not found" });
+    }
+
+    // Fetch services for that professional
+    const services = await Service.find({ professionalId: pro._id });
+
+    res.json({ 
+      ...pro.toObject(),
+      services 
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching professional details" });
+  }
+});
+
 
 // GET /professionals/:id/availability
 router.get("/:id/availability", async (req, res) => {
@@ -40,5 +62,6 @@ router.get("/:id/availability", async (req, res) => {
     }))
   );
 });
+
 
 module.exports = router;

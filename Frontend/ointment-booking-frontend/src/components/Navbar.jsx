@@ -43,6 +43,8 @@ export default function Navbar() {
         <Link to="/profile" className={`${isActive("/profile")} hover:text-blue-300 transition`}>
           Profile
         </Link>
+        <Link to="/appointments" className="hover:text-blue-300">Appointments</Link>
+
 
         <button
           onClick={handleLogout}
