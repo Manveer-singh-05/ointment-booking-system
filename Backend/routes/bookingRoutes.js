@@ -1,11 +1,13 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const Slot = require("../models/Slot");
 const Booking = require("../models/Booking");
 const Professional = require("../models/Professional");
+const User = require("../models/User");
 
 const router = express.Router();
 
-// ---------------------- CREATE BOOKING ----------------------
+/* ---------------------- CREATE BOOKING ---------------------- */
 router.post("/", async (req, res) => {
   try {
     const { professionalId, date, time, userId } = req.body;
@@ -14,33 +16,48 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    // Step 1: Check if slot exists
-    let slot = await Slot.findOne({ professionalId, date, time });
+    // Validate professionalId exists in DB
+    const professional = await Professional.findById(professionalId);
+    if (!professional) {
+      return res.status(404).json({ message: "Professional not found" });
+    }
 
-    // Step 2: If slot DOESN'T exist → create it
+    // Validate user
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Ensure professionalId is ObjectId to avoid CastError
+    const pid = new mongoose.Types.ObjectId(professionalId);
+
+    // Find slot
+    let slot = await Slot.findOne({ professionalId: pid, date, time });
+
+    // If slot doesn't exist → create it safely
     if (!slot) {
       slot = await Slot.create({
-        professionalId,
+        professionalId: pid,
         date,
         time,
+        isBooked: false
       });
     }
 
-    // Step 3: If already booked → deny
+    // Slot already booked?
     if (slot.isBooked) {
       return res.status(400).json({ message: "Slot already booked" });
     }
 
-    // Step 4: Create booking
+    // Create booking
     const booking = await Booking.create({
       slotId: slot._id,
-      professionalId,
-      clientName: "User",
-      clientEmail: "user@gmail.com",
+      professionalId: pid,
+      clientName: user.name,
+      clientEmail: user.email,
       status: "confirmed",
+      userId: user._id
     });
 
-    // Step 5: Mark slot as booked
+    // Mark slot booked
     slot.isBooked = true;
     await slot.save();
 
@@ -55,12 +72,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ---------------------- GET USER'S BOOKINGS ----------------------
+/* ---------------------- GET USER'S BOOKINGS ---------------------- */
 router.get("/user/:userId", async (req, res) => {
   try {
-    const bookings = await Booking.find()
+    const bookings = await Booking.find({ userId: req.params.userId })
       .populate("slotId")
-      .populate("professionalId");
+      .populate("professionalId")
+      .lean();
 
     res.json(bookings);
   } catch (err) {
@@ -68,16 +86,15 @@ router.get("/user/:userId", async (req, res) => {
   }
 });
 
-// ---------------------- CANCEL BOOKING ----------------------
+/* ---------------------- CANCEL BOOKING ---------------------- */
 router.put("/cancel/:id", async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
-
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Free slot
+    // Free slot if exists
     const slot = await Slot.findById(booking.slotId);
     if (slot) {
       slot.isBooked = false;
@@ -92,6 +109,32 @@ router.put("/cancel/:id", async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ message: "Error cancelling booking" });
+  }
+});
+
+/* ---------------------- ADMIN: GET ALL BOOKINGS ---------------------- */
+router.get("/bookings", async (req, res) => {
+  try {
+    const bookings = await Booking.find()
+      .populate("slotId")
+      .populate("professionalId")
+      .lean();
+
+    res.json(
+      bookings.map((b) => ({
+        _id: b._id,
+        professional: b.professionalId?.name || "Unknown",
+        clientName: b.clientName,
+        clientEmail: b.clientEmail,
+        date: b.slotId?.date || "",
+        time: b.slotId?.time || "",
+        notes: b.notes || "",
+        status: b.status,
+      }))
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Error loading bookings" });
   }
 });
 

@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
 
   const data = await Promise.all(
     pros.map(async (p) => {
-      const services = await Service.find({ professionalId: p._id });
+      const services = await Service.find({ professionalId: p._id || null });
       return { ...p.toObject(), services };
     })
   );
