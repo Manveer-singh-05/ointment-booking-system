@@ -7,13 +7,19 @@ export default function ManageServices() {
   const navigate = useNavigate();
 
   const [services, setServices] = useState([]);
-  const [form, setForm] = useState({ name: "", duration: "", price: "" });
+  const [form, setForm] = useState({ name: "", durationMinutes: "", price: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Fetch services
+  // Fetch services of this professional
   const loadServices = async () => {
-    const res = await axios.get(`http://localhost:4000/services/${id}`);
-    setServices(res.data);
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/professionals/${id}/services`
+      );
+      setServices(res.data);
+    } catch (err) {
+      console.log("Service fetch error:", err);
+    }
   };
 
   useEffect(() => {
@@ -26,24 +32,43 @@ export default function ManageServices() {
 
   // Add or Update service
   const saveService = async () => {
-    if (!form.name || !form.duration || !form.price) {
+    if (!form.name || !form.durationMinutes || !form.price) {
       return alert("Please fill all fields");
     }
 
-    if (editingId) {
-      await axios.put(`http://localhost:4000/services/${editingId}`, form);
-      alert("Service updated!");
-    } else {
-      await axios.post("http://localhost:4000/services", {
-        ...form,
-        professionalId: id
-      });
-      alert("Service added!");
-    }
+    try {
+      if (editingId) {
+        // UPDATE
+        await axios.put(
+          `http://localhost:5000/api/admin/services/${editingId}`,
+          form,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        alert("Service updated!");
+      } else {
+        // ADD new service
+        await axios.post(
+          `http://localhost:5000/api/admin/professionals/${id}/services`,
+          form,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        alert("Service added!");
+      }
 
-    setForm({ name: "", duration: "", price: "" });
-    setEditingId(null);
-    loadServices();
+      setForm({ name: "", durationMinutes: "", price: "" });
+      setEditingId(null);
+      loadServices();
+    } catch (err) {
+      console.log("Save service error:", err);
+    }
   };
 
   // Edit service
@@ -51,16 +76,26 @@ export default function ManageServices() {
     setEditingId(service._id);
     setForm({
       name: service.name,
-      duration: service.duration,
-      price: service.price
+      durationMinutes: service.durationMinutes,
+      price: service.price,
     });
   };
 
   // Delete service
   const deleteService = async (sid) => {
     if (!window.confirm("Delete this service?")) return;
-    await axios.delete(`http://localhost:4000/services/${sid}`);
-    loadServices();
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/admin/services/${sid}`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      loadServices();
+    } catch (err) {
+      console.log("Delete error:", err);
+    }
   };
 
   return (
@@ -80,9 +115,9 @@ export default function ManageServices() {
           />
 
           <input
-            name="duration"
+            name="durationMinutes"
             placeholder="Duration (minutes)"
-            value={form.duration}
+            value={form.durationMinutes}
             onChange={handleChange}
             className="w-full p-3 rounded-lg border"
           />
@@ -115,7 +150,7 @@ export default function ManageServices() {
               <div>
                 <p className="text-lg font-semibold">{s.name}</p>
                 <p className="text-gray-600">
-                  {s.duration} min — ₹{s.price}
+                  {s.durationMinutes} min — ₹{s.price}
                 </p>
               </div>
 
@@ -139,7 +174,7 @@ export default function ManageServices() {
         </div>
 
         <button
-          onClick={() => navigate("/admin/manage-professionals")}
+          onClick={() => navigate("/admin/professionals")}
           className="mt-8 w-full py-3 bg-gray-300 rounded-lg hover:bg-gray-400"
         >
           ← Back

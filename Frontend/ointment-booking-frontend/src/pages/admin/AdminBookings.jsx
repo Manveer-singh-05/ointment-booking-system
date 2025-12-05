@@ -7,7 +7,10 @@ export default function AdminBookings() {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/bookings");
+      const res = await axios.get("http://localhost:5000/api/admin/bookings", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+
       setBookings(res.data);
       setLoading(false);
     } catch (err) {
@@ -21,9 +24,13 @@ export default function AdminBookings() {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/admin/bookings/${id}`, {
-        status,
-      });
+      await axios.put(
+        `http://localhost:5000/api/admin/bookings/${id}`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+        }
+      );
       fetchBookings();
     } catch (err) {
       console.log("Status update error:", err);
@@ -32,9 +39,13 @@ export default function AdminBookings() {
 
   return (
     <div className="min-h-screen pt-24 px-6 bg-gray-100">
-      <div className="max-w-5xl mx-auto bg-white/30 backdrop-blur-2xl p-8 rounded-3xl shadow-xl float-animation">
-
-        <h1 className="text-4xl font-bold mb-6 text-gray-900">
+      <div
+        className="
+          max-w-5xl mx-auto p-10 rounded-3xl shadow-2xl
+          bg-white/30 backdrop-blur-2xl border border-white/40 float-animation
+        "
+      >
+        <h1 className="text-4xl font-bold mb-8 text-gray-900 flex items-center gap-2">
           📅 All Bookings
         </h1>
 
@@ -47,25 +58,32 @@ export default function AdminBookings() {
             {bookings.map((b) => (
               <div
                 key={b._id}
-                className="bg-white/60 p-6 rounded-xl shadow hover:scale-[1.01] transition-all"
+                className="
+                  bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg 
+                  hover:scale-[1.02] transition-all border border-white/30
+                "
               >
-                <h2 className="text-xl font-semibold text-gray-800">
-                  {b.professional?.name || "Unknown Professional"}
+                {/* Professional Name */}
+                <h2 className="text-2xl font-semibold text-gray-800">
+                  {b.professional || "Unknown Professional"}
                 </h2>
 
+                {/* Client Name + Email  */}
                 <p className="text-gray-600 mt-1">
                   👤 <b>{b.clientName}</b> — {b.clientEmail}
                 </p>
 
+                {/* Date + Time */}
                 <p className="mt-1 text-gray-600">
                   🗓️ {b.date} | ⏰ {b.time}
                 </p>
 
+                {/* Notes */}
                 {b.notes && (
                   <p className="mt-1 text-gray-700">📝 Notes: {b.notes}</p>
                 )}
 
-                {/* Status dropdown */}
+                {/* Status Dropdown */}
                 <div className="mt-4">
                   <label className="font-semibold text-gray-700 mr-2">
                     Status:
@@ -74,7 +92,10 @@ export default function AdminBookings() {
                   <select
                     value={b.status}
                     onChange={(e) => updateStatus(b._id, e.target.value)}
-                    className="px-4 py-2 rounded-lg border shadow"
+                    className="
+                      px-4 py-2 rounded-lg border shadow bg-white/70 
+                      hover:bg-white transition
+                    "
                   >
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>

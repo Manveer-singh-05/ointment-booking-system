@@ -4,6 +4,9 @@ const Slot = require("../models/Slot");
 const Booking = require("../models/Booking");
 const Professional = require("../models/Professional");
 const User = require("../models/User");
+const authMiddleware = require("../middleware/authMiddleware");
+const isAdmin = require("../middleware/isAdmin");
+
 
 const router = express.Router();
 
@@ -113,29 +116,30 @@ router.put("/cancel/:id", async (req, res) => {
 });
 
 /* ---------------------- ADMIN: GET ALL BOOKINGS ---------------------- */
-router.get("/bookings", async (req, res) => {
+router.get("/bookings", authMiddleware, isAdmin, async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate("slotId")
-      .populate("professionalId")
+      .populate("slotId")            // includes date + time
+      .populate("professionalId")    // includes name
       .lean();
 
-    res.json(
-      bookings.map((b) => ({
-        _id: b._id,
-        professional: b.professionalId?.name || "Unknown",
-        clientName: b.clientName,
-        clientEmail: b.clientEmail,
-        date: b.slotId?.date || "",
-        time: b.slotId?.time || "",
-        notes: b.notes || "",
-        status: b.status,
-      }))
-    );
+    const formatted = bookings.map((b) => ({
+      _id: b._id,
+      professional: b.professionalId?.name || "Unknown",
+      clientName: b.clientName,
+      clientEmail: b.clientEmail,
+      date: b.slotId?.date || "N/A",
+      time: b.slotId?.time || "N/A",
+      notes: b.notes || "",
+      status: b.status,
+    }));
+
+    res.json(formatted);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Error loading bookings" });
+    console.log("BOOKING FETCH ERROR:", err);
+    res.status(500).json({ message: "Error fetching bookings" });
   }
 });
+
 
 module.exports = router;

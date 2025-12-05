@@ -99,7 +99,6 @@ router.delete("/services/:id", authMiddleware, isAdmin, async (req, res) => {
     res.status(500).json({ message: "Error deleting service" });
   }
 });
-
 /* ================================
     BOOKINGS (ADMIN)
 ================================ */
@@ -107,22 +106,24 @@ router.delete("/services/:id", authMiddleware, isAdmin, async (req, res) => {
 router.get("/bookings", authMiddleware, isAdmin, async (req, res) => {
   try {
     const bookings = await Booking.find()
+      .populate("slotId")
       .populate("professionalId")
       .lean();
 
     res.json(
       bookings.map((b) => ({
         _id: b._id,
-        professional: b.professionalId,
+        professional: b.professionalId?.name || "Unknown",
         clientName: b.clientName,
         clientEmail: b.clientEmail,
-        date: b.date,
-        time: b.time,
-        notes: b.notes,
+        date: b.slotId?.date || "N/A",
+        time: b.slotId?.time || "N/A",
+        notes: b.notes || "",
         status: b.status,
       }))
     );
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Error fetching bookings" });
   }
 });
@@ -133,9 +134,11 @@ router.put("/bookings/:id", authMiddleware, isAdmin, async (req, res) => {
     await Booking.findByIdAndUpdate(req.params.id, { status: req.body.status });
     res.json({ message: "Booking status updated" });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Error updating status" });
   }
 });
+
 
 /* ================================
     REVIEWS (ADMIN)
