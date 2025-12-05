@@ -21,7 +21,8 @@ import ManageProfessionals from "./pages/admin/ManageProfessionals";
 import AddProfessional from "./pages/admin/AddProfessional";
 import ManageServices from "./pages/admin/ManageServices";
 import EditProfessional from "./pages/admin/EditProfessional"; 
-
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminReviews from "./pages/admin/AdminReviews";
 
 
 
@@ -60,6 +61,8 @@ function AppLayout() {
         />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/professionals" element={<ManageProfessionals />} />
+        <Route path="/admin/bookings" element={<AdminBookings />} />
+<Route path="/admin/reviews" element={<AdminReviews />} />
         <Route
           path="/dashboard"
           element={
@@ -89,7 +92,7 @@ function AppLayout() {
         <Route path="/admin/add-professional" element={<AddProfessional />} />
          <Route path="/admin/edit-professional/:id" element={<EditProfessional />} />
         <Route path="/book/:professionalId" element={<BookAppointment />} />
-        <Route path="/admin/services/:id" element={<ManageServices />} />
+        <Route path="/admin/services" element={<ManageServices />} />
       </Routes>
     </>
   );
