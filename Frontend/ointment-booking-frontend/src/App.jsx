@@ -16,6 +16,16 @@ import AboutUs from "./pages/AboutUs";
 import BookAppointment from "./pages/BookAppointment";
 import Appointments from "./pages/Appointments";
 import ProfessionalDetails from "./pages/ProfessionalDetails";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManageProfessionals from "./pages/admin/ManageProfessionals";
+import AddProfessional from "./pages/admin/AddProfessional";
+import ManageServices from "./pages/admin/ManageServices";
+import EditProfessional from "./pages/admin/EditProfessional"; 
+
+
+
+
+
 
 
 
@@ -48,7 +58,8 @@ function AppLayout() {
             </ProtectedRoute>
           }
         />
-
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/professionals" element={<ManageProfessionals />} />
         <Route
           path="/dashboard"
           element={
@@ -75,7 +86,10 @@ function AppLayout() {
             </ProtectedRoute>
           }
         />
+        <Route path="/admin/add-professional" element={<AddProfessional />} />
+         <Route path="/admin/edit-professional/:id" element={<EditProfessional />} />
         <Route path="/book/:professionalId" element={<BookAppointment />} />
+        <Route path="/admin/services/:id" element={<ManageServices />} />
       </Routes>
     </>
   );

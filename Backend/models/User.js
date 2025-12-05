@@ -8,7 +8,13 @@ const UserSchema = new mongoose.Schema({
   phone: { type: String, default: "" },
   bio: { type: String, default: "" },
   photo: { type: String, default: "" },
-  lastLogin: { type: Date }
+  lastLogin: { type: Date },
+   // ADD THIS 👇
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user"
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);

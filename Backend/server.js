@@ -10,6 +10,8 @@ const authRoutes = require("./routes/authRoutes");  // <-- NEW
 const adminRoutes = require("./routes/adminRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 
+const serviceRoutes = require("./routes/serviceRoutes");
+
 
 
 
@@ -30,4 +32,5 @@ app.use("/bookings", bookingRoutes);
 app.use("/slots", slotRoutes);
 app.use("/admin", adminRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/services", serviceRoutes);
 app.listen(4000, () => console.log("Server running on port 4000"));
