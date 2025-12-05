@@ -7,10 +7,11 @@ export default function AdminBookings() {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/bookings", {
+      const res = await axios.get("http://localhost:4000/admin/bookings", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
+      console.log("BOOKINGS RECEIVED:", res.data);
       setBookings(res.data);
       setLoading(false);
     } catch (err) {
@@ -25,7 +26,7 @@ export default function AdminBookings() {
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/admin/bookings/${id}`,
+        `http://localhost:4000/admin/bookings/${id}`,
         { status },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
@@ -63,27 +64,22 @@ export default function AdminBookings() {
                   hover:scale-[1.02] transition-all border border-white/30
                 "
               >
-                {/* Professional Name */}
                 <h2 className="text-2xl font-semibold text-gray-800">
                   {b.professional || "Unknown Professional"}
                 </h2>
 
-                {/* Client Name + Email  */}
                 <p className="text-gray-600 mt-1">
                   👤 <b>{b.clientName}</b> — {b.clientEmail}
                 </p>
 
-                {/* Date + Time */}
                 <p className="mt-1 text-gray-600">
                   🗓️ {b.date} | ⏰ {b.time}
                 </p>
 
-                {/* Notes */}
                 {b.notes && (
                   <p className="mt-1 text-gray-700">📝 Notes: {b.notes}</p>
                 )}
 
-                {/* Status Dropdown */}
                 <div className="mt-4">
                   <label className="font-semibold text-gray-700 mr-2">
                     Status:

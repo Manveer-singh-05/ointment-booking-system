@@ -7,10 +7,11 @@ export default function AdminReviews() {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/reviews", {
+      const res = await axios.get("http://localhost:4000/admin/reviews", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
+      console.log("REVIEWS RECEIVED:", res.data);
       setReviews(res.data);
       setLoading(false);
     } catch (err) {
@@ -22,7 +23,7 @@ export default function AdminReviews() {
     if (!confirm("Are you sure you want to delete this review?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/admin/reviews/${id}`, {
+      await axios.delete(`http://localhost:4000/admin/reviews/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
@@ -38,10 +39,11 @@ export default function AdminReviews() {
 
   return (
     <div className="min-h-screen pt-24 px-6 bg-gray-100">
-      <div className="
-          max-w-4xl mx-auto p-10 rounded-3xl shadow-2xl
-          bg-white/20 backdrop-blur-2xl border border-white/40 float-animation
-        "
+      <div
+        className="
+        max-w-4xl mx-auto p-10 rounded-3xl shadow-2xl
+        bg-white/20 backdrop-blur-2xl border border-white/40 float-animation
+      "
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-900 flex items-center gap-2">
           ⭐ Manage Reviews
@@ -57,9 +59,9 @@ export default function AdminReviews() {
               <div
                 key={r._id}
                 className="
-                  bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg 
-                  hover:scale-[1.02] transition-all border border-white/30
-                "
+                bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg 
+                hover:scale-[1.02] transition-all border border-white/30
+              "
               >
                 {/* Professional */}
                 <h2 className="text-xl font-semibold text-gray-800">
@@ -77,7 +79,7 @@ export default function AdminReviews() {
                 {/* Review Text */}
                 <p className="mt-3 text-gray-700 italic">"{r.comment}"</p>
 
-                {/* User */}
+                {/* Reviewer */}
                 <p className="text-sm mt-2 text-gray-500">
                   — {r.userId?.name || "Anonymous"}
                 </p>
@@ -86,9 +88,9 @@ export default function AdminReviews() {
                 <button
                   onClick={() => deleteReview(r._id)}
                   className="
-                    mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 
-                    text-white rounded-lg shadow transition
-                  "
+                  mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 
+                  text-white rounded-lg shadow transition
+                "
                 >
                   Delete Review
                 </button>

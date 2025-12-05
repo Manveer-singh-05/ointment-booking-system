@@ -61,16 +61,35 @@ router.delete("/professionals/:id", authMiddleware, isAdmin, async (req, res) =>
     res.status(500).json({ message: "Error deleting professional" });
   }
 });
-
 /* ================================
-    SERVICE MANAGEMENT
+      SERVICE MANAGEMENT (FIXED)
 ================================ */
 
-router.post("/professionals/:id/services", authMiddleware, isAdmin, async (req, res) => {
+// Get all services of a professional
+router.get("/services/:professionalId", authMiddleware, isAdmin, async (req, res) => {
   try {
+    const services = await Service.find({ professionalId: req.params.professionalId });
+    res.json(services);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching services" });
+  }
+});
+
+// Add service
+router.post("/services", authMiddleware, isAdmin, async (req, res) => {
+  try {
+    const { professionalId, name, duration, price } = req.body;
+
+    if (!professionalId || !name || !duration || !price) {
+      return res.status(400).json({ message: "All fields required" });
+    }
+
     const service = await Service.create({
-      professionalId: req.params.id,
-      ...req.body
+      professionalId,
+      name,
+      durationMinutes: duration,
+      price
     });
 
     res.json({ message: "Service added", service });
@@ -80,16 +99,23 @@ router.post("/professionals/:id/services", authMiddleware, isAdmin, async (req, 
   }
 });
 
+// Update service
 router.put("/services/:id", authMiddleware, isAdmin, async (req, res) => {
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json({ message: "Service updated", service });
+    const updated = await Service.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      durationMinutes: req.body.duration,
+      price: req.body.price
+    }, { new: true });
+
+    res.json({ message: "Service updated", updated });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Error updating service" });
   }
 });
 
+// Delete service
 router.delete("/services/:id", authMiddleware, isAdmin, async (req, res) => {
   try {
     await Service.findByIdAndDelete(req.params.id);
@@ -99,6 +125,8 @@ router.delete("/services/:id", authMiddleware, isAdmin, async (req, res) => {
     res.status(500).json({ message: "Error deleting service" });
   }
 });
+
+
 /* ================================
     BOOKINGS (ADMIN)
 ================================ */
@@ -106,16 +134,17 @@ router.delete("/services/:id", authMiddleware, isAdmin, async (req, res) => {
 router.get("/bookings", authMiddleware, isAdmin, async (req, res) => {
   try {
     const bookings = await Booking.find()
-      .populate("slotId")
-      .populate("professionalId")
+      .populate("professionalId", "name specialization")
+      .populate("slotId", "date time")
+      .populate("userId", "name email")
       .lean();
 
     res.json(
       bookings.map((b) => ({
         _id: b._id,
         professional: b.professionalId?.name || "Unknown",
-        clientName: b.clientName,
-        clientEmail: b.clientEmail,
+        clientName: b.userId?.name || b.clientName,
+        clientEmail: b.userId?.email || b.clientEmail,
         date: b.slotId?.date || "N/A",
         time: b.slotId?.time || "N/A",
         notes: b.notes || "",
@@ -127,6 +156,7 @@ router.get("/bookings", authMiddleware, isAdmin, async (req, res) => {
     res.status(500).json({ message: "Error fetching bookings" });
   }
 });
+
 
 // Update booking status
 router.put("/bookings/:id", authMiddleware, isAdmin, async (req, res) => {

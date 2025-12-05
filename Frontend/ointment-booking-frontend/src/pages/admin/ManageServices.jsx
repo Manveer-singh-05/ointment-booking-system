@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function ManageServices() {
   const { id } = useParams(); // professional ID
-  const navigate = useNavigate();
 
   const [services, setServices] = useState([]);
-  const [form, setForm] = useState({ name: "", durationMinutes: "", price: "" });
+  const [form, setForm] = useState({ name: "", duration: "", price: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // Fetch services of this professional
+  const API = "http://localhost:4000/api/admin";
+
+  // Load services
   const loadServices = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/professionals/${id}/services`
-      );
+      const res = await axios.get(`${API}/services/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+
       setServices(res.data);
     } catch (err) {
-      console.log("Service fetch error:", err);
+      console.log("Error loading services:", err);
     }
   };
 
@@ -30,77 +32,69 @@ export default function ManageServices() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Add or Update service
   const saveService = async () => {
-    if (!form.name || !form.durationMinutes || !form.price) {
-      return alert("Please fill all fields");
-    }
+    if (!form.name || !form.duration || !form.price)
+      return alert("All fields are required");
 
     try {
       if (editingId) {
         // UPDATE
         await axios.put(
-          `http://localhost:5000/api/admin/services/${editingId}`,
-          form,
+          `${API}/services/${editingId}`,
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+            name: form.name,
+            duration: form.duration,
+            price: form.price
+          },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
-        alert("Service updated!");
       } else {
-        // ADD new service
+        // ADD NEW
         await axios.post(
-          `http://localhost:5000/api/admin/professionals/${id}/services`,
-          form,
+          `${API}/services`,
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
+            professionalId: id,
+            name: form.name,
+            duration: form.duration,
+            price: form.price
+          },
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
-        alert("Service added!");
       }
 
-      setForm({ name: "", durationMinutes: "", price: "" });
+      setForm({ name: "", duration: "", price: "" });
       setEditingId(null);
       loadServices();
     } catch (err) {
-      console.log("Save service error:", err);
+      console.log("Error saving service:", err);
     }
   };
 
-  // Edit service
   const startEdit = (service) => {
     setEditingId(service._id);
     setForm({
       name: service.name,
-      durationMinutes: service.durationMinutes,
-      price: service.price,
+      duration: service.durationMinutes,
+      price: service.price
     });
   };
 
-  // Delete service
   const deleteService = async (sid) => {
     if (!window.confirm("Delete this service?")) return;
 
     try {
-      await axios.delete(
-        `http://localhost:5000/api/admin/services/${sid}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      await axios.delete(`${API}/services/${sid}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
       loadServices();
     } catch (err) {
-      console.log("Delete error:", err);
+      console.log("Error deleting service:", err);
     }
   };
 
   return (
     <div className="pt-24 px-6 flex flex-col items-center">
-      <div className="w-full max-w-4xl bg-white p-10 rounded-3xl shadow-xl hover:shadow-2xl transition">
+      <div className="w-full max-w-4xl bg-white/40 backdrop-blur-xl p-10 rounded-3xl shadow-xl">
 
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Services</h2>
 
@@ -115,9 +109,9 @@ export default function ManageServices() {
           />
 
           <input
-            name="durationMinutes"
+            name="duration"
             placeholder="Duration (minutes)"
-            value={form.durationMinutes}
+            value={form.duration}
             onChange={handleChange}
             className="w-full p-3 rounded-lg border"
           />
@@ -132,21 +126,17 @@ export default function ManageServices() {
 
           <button
             onClick={saveService}
-            className="w-full py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            className="w-full py-3 bg-blue-600 text-white rounded-lg"
           >
             {editingId ? "Update Service" : "Add Service"}
           </button>
         </div>
 
-        {/* SERVICE LIST */}
         <h3 className="text-xl font-semibold mb-4">Existing Services</h3>
 
         <div className="space-y-4">
           {services.map((s) => (
-            <div
-              key={s._id}
-              className="p-4 bg-gray-100 rounded-xl shadow flex justify-between items-center"
-            >
+            <div key={s._id} className="p-4 bg-gray-100 rounded-xl shadow flex justify-between">
               <div>
                 <p className="text-lg font-semibold">{s.name}</p>
                 <p className="text-gray-600">
@@ -157,14 +147,14 @@ export default function ManageServices() {
               <div className="flex gap-3">
                 <button
                   onClick={() => startEdit(s)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() => deleteService(s._id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
                 >
                   Delete
                 </button>
@@ -173,12 +163,6 @@ export default function ManageServices() {
           ))}
         </div>
 
-        <button
-          onClick={() => navigate("/admin/professionals")}
-          className="mt-8 w-full py-3 bg-gray-300 rounded-lg hover:bg-gray-400"
-        >
-          ← Back
-        </button>
       </div>
     </div>
   );
