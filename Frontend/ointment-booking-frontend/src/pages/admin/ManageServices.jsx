@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function ManageServices() {
-  const { id } = useParams(); // professional ID
-
   const [services, setServices] = useState([]);
   const [form, setForm] = useState({ name: "", duration: "", price: "" });
   const [editingId, setEditingId] = useState(null);
 
   const API = "http://localhost:4000/api/admin";
 
-  // Load services
+  // Load ALL services
   const loadServices = async () => {
     try {
-      const res = await axios.get(`${API}/services/${id}`, {
+      const res = await axios.get(`${API}/services`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
@@ -38,7 +35,7 @@ export default function ManageServices() {
 
     try {
       if (editingId) {
-        // UPDATE
+        // UPDATE existing service
         await axios.put(
           `${API}/services/${editingId}`,
           {
@@ -49,11 +46,10 @@ export default function ManageServices() {
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
       } else {
-        // ADD NEW
+        // ADD NEW service without professionalId
         await axios.post(
           `${API}/services`,
           {
-            professionalId: id,
             name: form.name,
             duration: form.duration,
             price: form.price
@@ -86,6 +82,7 @@ export default function ManageServices() {
       await axios.delete(`${API}/services/${sid}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
+
       loadServices();
     } catch (err) {
       console.log("Error deleting service:", err);
@@ -95,7 +92,7 @@ export default function ManageServices() {
   return (
     <div className="pt-24 px-6 flex flex-col items-center">
       <div className="w-full max-w-4xl bg-white/40 backdrop-blur-xl p-10 rounded-3xl shadow-xl">
-
+        
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Services</h2>
 
         {/* Add / Edit Form */}

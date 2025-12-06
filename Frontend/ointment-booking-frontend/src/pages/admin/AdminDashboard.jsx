@@ -47,7 +47,7 @@ export default function AdminDashboard() {
           </Link>
 
           <Link
-            to="to={`/admin/services/${pro._id}`}"
+            to="/admin/services"
             className="
               bg-white/40 p-6 rounded-xl shadow-lg hover:scale-[1.03] 
               transition-all text-center font-semibold text-gray-800

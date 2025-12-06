@@ -92,7 +92,7 @@ function AppLayout() {
         <Route path="/admin/add-professional" element={<AddProfessional />} />
          <Route path="/admin/edit-professional/:id" element={<EditProfessional />} />
         <Route path="/book/:professionalId" element={<BookAppointment />} />
-        <Route path="/admin/services/:id" element={<ManageServices />} />
+        <Route path="/admin/services" element={<ManageServices />} />
       </Routes>
     </>
   );

@@ -64,6 +64,18 @@ router.delete("/professionals/:id", authMiddleware, isAdmin, async (req, res) =>
 /* ================================
       SERVICE MANAGEMENT (FIXED)
 ================================ */
+// Get ALL services (independent page)
+router.get("/services", authMiddleware, isAdmin, async (req, res) => {
+  try {
+    const services = await Service.find()
+      .populate("professionalId", "name specialization");
+
+    res.json(services);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error fetching all services" });
+  }
+});
 
 // Get all services of a professional
 router.get("/services/:professionalId", authMiddleware, isAdmin, async (req, res) => {
