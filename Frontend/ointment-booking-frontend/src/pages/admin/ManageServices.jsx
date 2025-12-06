@@ -3,18 +3,33 @@ import axios from "axios";
 
 export default function ManageServices() {
   const [services, setServices] = useState([]);
-  const [form, setForm] = useState({ name: "", duration: "", price: "" });
+  const [professionals, setProfessionals] = useState([]);
+  const [form, setForm] = useState({
+    name: "",
+    duration: "",
+    price: "",
+    professionalId: ""
+  });
   const [editingId, setEditingId] = useState(null);
 
   const API = "http://localhost:4000/api/admin";
 
-  // Load ALL services
+  // Load all professionals
+  const loadProfessionals = async () => {
+    try {
+      const res = await axios.get("http://localhost:4000/professionals");
+      setProfessionals(res.data);
+    } catch (err) {
+      console.log("Error loading professionals:", err);
+    }
+  };
+
+  // Load all services
   const loadServices = async () => {
     try {
-      const res = await axios.get(`${API}/services`, {
+      const res = await axios.get(`${API}/services-all`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
-
       setServices(res.data);
     } catch (err) {
       console.log("Error loading services:", err);
@@ -22,6 +37,7 @@ export default function ManageServices() {
   };
 
   useEffect(() => {
+    loadProfessionals();
     loadServices();
   }, []);
 
@@ -30,35 +46,37 @@ export default function ManageServices() {
   };
 
   const saveService = async () => {
-    if (!form.name || !form.duration || !form.price)
+    if (!form.name || !form.duration || !form.price || !form.professionalId)
       return alert("All fields are required");
 
     try {
       if (editingId) {
-        // UPDATE existing service
+        // Update service
         await axios.put(
           `${API}/services/${editingId}`,
           {
             name: form.name,
             duration: form.duration,
-            price: form.price
+            price: form.price,
+            professionalId: form.professionalId
           },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
       } else {
-        // ADD NEW service without professionalId
+        // Add new service
         await axios.post(
           `${API}/services`,
           {
             name: form.name,
             duration: form.duration,
-            price: form.price
+            price: form.price,
+            professionalId: form.professionalId
           },
           { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
         );
       }
 
-      setForm({ name: "", duration: "", price: "" });
+      setForm({ name: "", duration: "", price: "", professionalId: "" });
       setEditingId(null);
       loadServices();
     } catch (err) {
@@ -71,7 +89,8 @@ export default function ManageServices() {
     setForm({
       name: service.name,
       duration: service.durationMinutes,
-      price: service.price
+      price: service.price,
+      professionalId: service.professionalId?._id || ""
     });
   };
 
@@ -92,11 +111,12 @@ export default function ManageServices() {
   return (
     <div className="pt-24 px-6 flex flex-col items-center">
       <div className="w-full max-w-4xl bg-white/40 backdrop-blur-xl p-10 rounded-3xl shadow-xl">
-        
+
         <h2 className="text-3xl font-bold mb-6 text-gray-800">Manage Services</h2>
 
-        {/* Add / Edit Form */}
+        {/* Add/Edit Form */}
         <div className="space-y-4 bg-gray-50 p-6 rounded-xl shadow-inner mb-8">
+
           <input
             name="name"
             placeholder="Service Name"
@@ -121,6 +141,21 @@ export default function ManageServices() {
             className="w-full p-3 rounded-lg border"
           />
 
+          {/* Professional Dropdown */}
+          <select
+            name="professionalId"
+            value={form.professionalId}
+            onChange={handleChange}
+            className="w-full p-3 rounded-lg border"
+          >
+            <option value="">Select Professional</option>
+            {professionals.map((pro) => (
+              <option key={pro._id} value={pro._id}>
+                {pro.name} — {pro.specialization}
+              </option>
+            ))}
+          </select>
+
           <button
             onClick={saveService}
             className="w-full py-3 bg-blue-600 text-white rounded-lg"
@@ -133,11 +168,17 @@ export default function ManageServices() {
 
         <div className="space-y-4">
           {services.map((s) => (
-            <div key={s._id} className="p-4 bg-gray-100 rounded-xl shadow flex justify-between">
+            <div
+              key={s._id}
+              className="p-4 bg-gray-100 rounded-xl shadow flex justify-between"
+            >
               <div>
                 <p className="text-lg font-semibold">{s.name}</p>
                 <p className="text-gray-600">
                   {s.durationMinutes} min — ₹{s.price}
+                </p>
+                <p className="text-gray-500 text-sm">
+                  👨‍⚕️ {s.professionalId?.name || "Unknown Professional"}
                 </p>
               </div>
 
