@@ -24,19 +24,22 @@ export default function Dashboard() {
 
   return (
     <div
-      className="min-h-screen pt-24 px-6 flex justify-center"
+      className="min-h-screen pt-24 px-6 flex justify-center "
       style={{
         backgroundImage: `url(${dashbgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        
       }}
     >
       {/* GLASS CONTAINER */}
       <div
         className="
           w-full max-w-6xl p-10 rounded-3xl 
-          bg-white/20 backdrop-blur-2xl border border-white/30
-          shadow-2xl float-animation
+          bg-white/20 backdrop-blur-xl border border-white/30 transition-all duration-500 
+      hover:scale-[1.03]
+      hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]
+          shadow-2xl float-animation 
         "
       >
         {/* SEARCH + FILTER */}
@@ -46,7 +49,7 @@ export default function Dashboard() {
             placeholder="Search professionals..."
             className="
               w-full md:w-1/2 p-3 rounded-xl border 
-              bg-white/50 backdrop-blur-lg shadow-md 
+              bg-white/50 backdrop-blur-xl shadow-md 
               focus:shadow-xl transition
             "
             value={search}
@@ -56,7 +59,7 @@ export default function Dashboard() {
           <select
             className="
               p-3 rounded-xl border 
-              bg-white/50 backdrop-blur-lg shadow-md 
+              bg-white/50 backdrop-blur-xl shadow-md 
               focus:shadow-xl transition
             "
             value={filter}
