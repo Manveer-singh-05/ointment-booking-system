@@ -5,55 +5,58 @@ export default function ChangePasswordModal({ onClose }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
 
-  const handleChangePassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      setError("New passwords do not match");
+      alert("New passwords do not match!");
       return;
     }
 
     try {
-      const token = localStorage.getItem("token");
-
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:4000/auth/change-password",
         { oldPassword, newPassword },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
 
-      alert("Password changed successfully!");
+      alert(res.data.message);
       onClose();
-    } catch (err) {
-      setError(err.response?.data?.message || "Error changing password");
+    } catch (error) {
+      alert(error.response?.data?.message || "Error updating password");
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white w-full max-w-md p-6 rounded-xl shadow-xl">
-        <h2 className="text-2xl font-semibold mb-4">Change Password</h2>
+    // 🔥 Smooth transparent dark overlay + blur
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
 
-        <form onSubmit={handleChangePassword} className="space-y-4">
+      <div className="
+        w-full max-w-lg p-8 rounded-2xl 
+        bg-white/20 backdrop-blur-2xl 
+        shadow-[0_0_30px_rgba(255,255,255,0.25)]
+        border border-white/40
+        animate-fadeUp
+      ">
 
-          {error && (
-            <p className="text-red-500 bg-red-100 p-2 rounded">{error}</p>
-          )}
+        <h2 className="text-2xl font-bold mb-6 text-gray-900">
+          Change Password
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-5 text-gray-900">
 
           <div>
             <label className="font-medium">Old Password</label>
             <input
               type="password"
-              className="w-full p-2 border rounded mt-1"
+              className="w-full mt-1 p-3 rounded-lg border bg-white/70 focus:outline-none"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              required
             />
           </div>
 
@@ -61,10 +64,9 @@ export default function ChangePasswordModal({ onClose }) {
             <label className="font-medium">New Password</label>
             <input
               type="password"
-              className="w-full p-2 border rounded mt-1"
+              className="w-full mt-1 p-3 rounded-lg border bg-white/70 focus:outline-none"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              required
             />
           </div>
 
@@ -72,29 +74,29 @@ export default function ChangePasswordModal({ onClose }) {
             <label className="font-medium">Confirm New Password</label>
             <input
               type="password"
-              className="w-full p-2 border rounded mt-1"
+              className="w-full mt-1 p-3 rounded-lg border bg-white/70 focus:outline-none"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              required
             />
           </div>
 
-          <div className="flex justify-end gap-3 mt-4">
+          <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
-              className="px-4 py-2 bg-gray-300 rounded-lg"
               onClick={onClose}
+              className="px-5 py-2 bg-gray-300/80 rounded-lg hover:bg-gray-400 transition"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
               Change Password
             </button>
           </div>
+
         </form>
       </div>
     </div>

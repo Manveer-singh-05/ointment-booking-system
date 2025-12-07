@@ -2,18 +2,23 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function EditProfileModal({ user, onClose, onUpdate }) {
+
   const defaultPhoto = "https://cdn-icons-png.flaticon.com/512/848/848006.png";
 
-  const existingPhoto = user?.photo
-    ? `http://localhost:4000${user.photo}`
-    : "";
+  // Build correct preview path
+  const initialPreview =
+    user?.photo
+      ? (user.photo.startsWith("http") 
+          ? user.photo 
+          : `http://localhost:4000${user.photo}`)
+      : defaultPhoto;
 
   const [name, setName] = useState(user?.name);
   const [phone, setPhone] = useState(user?.phone || "");
   const [bio, setBio] = useState(user?.bio || "");
   const [photo, setPhoto] = useState(null);
   const [removePhoto, setRemovePhoto] = useState(false);
-  const [preview, setPreview] = useState(existingPhoto || defaultPhoto);
+  const [preview, setPreview] = useState(initialPreview);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +29,9 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
     formData.append("bio", bio);
     formData.append("removePhoto", removePhoto);
 
-    if (photo) formData.append("photo", photo);
+    if (photo) {
+      formData.append("photo", photo);
+    }
 
     try {
       const res = await axios.put(
@@ -38,16 +45,22 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
         }
       );
 
-      const updatedUser = {
-        ...res.data.user,
-        photo: res.data.user.photo
-          ? `http://localhost:4000${res.data.user.photo}`
-          : "",
-      };
+      const updated = res.data.user;
 
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      onUpdate(updatedUser);
+      // Build full photo URL only if photo exists
+      if (updated.photo) {
+        updated.photo =
+          updated.photo.startsWith("http")
+            ? updated.photo
+            : `http://localhost:4000${updated.photo}`;
+      }
+
+      // Store updated user in localStorage
+      localStorage.setItem("user", JSON.stringify(updated));
+
+      onUpdate(updated);
       onClose();
+
     } catch (err) {
       console.log("Upload Error:", err);
       alert("Profile update failed!");
@@ -58,13 +71,13 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
     const file = e.target.files[0];
     setRemovePhoto(false);
     setPhoto(file);
-    setPreview(URL.createObjectURL(file)); // Preview new photo
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleRemovePhoto = () => {
-    setPhoto(null);
     setRemovePhoto(true);
-    setPreview(defaultPhoto); // Reset to default image
+    setPhoto(null);
+    setPreview(defaultPhoto);
   };
 
   return (
@@ -106,18 +119,16 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
             />
           </div>
 
-          {/* PHOTO SECTION */}
+          {/* PHOTO UPLOAD */}
           <div>
             <label className="font-medium">Profile Photo</label>
 
             <div className="flex items-center gap-4 mt-2">
-              {/* PREVIEW IMAGE */}
               <img
                 src={preview}
                 className="w-20 h-20 rounded-full object-cover border shadow"
               />
 
-              {/* CHOOSE FILE */}
               <label
                 htmlFor="photoUpload"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition"
@@ -132,7 +143,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                 onChange={handlePhotoChange}
               />
 
-              {/* REMOVE PHOTO BUTTON */}
+              {/* REMOVE BUTTON */}
               <button
                 type="button"
                 onClick={handleRemovePhoto}
