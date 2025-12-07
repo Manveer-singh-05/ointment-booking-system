@@ -101,48 +101,53 @@ router.post("/login", async (req, res) => {
   }
 });
 // ---------------- UPDATE PROFILE ----------------
-// router.put("/update-profile", authMiddleware, async (req, res) => {
-//   try {
-//     const { name, phone, bio } = req.body;
+// router.put(
+//   "/update-profile",
+//   authMiddleware,
+//   upload.single("photo"),   // <-- IMPORTANT
+//   async (req, res) => {
+//     try {
+//       const { name, phone, bio } = req.body;
 
-//     // Find user from JWT token
-//     const user = await User.findById(req.user.id);
+//       const user = await User.findById(req.user.id);
+//       if (!user) return res.status(404).json({ message: "User not found" });
 
-//     if (!user) return res.status(404).json({ message: "User not found" });
+//       if (name) user.name = name;
+//       if (phone) user.phone = phone;
+//       if (bio) user.bio = bio;
 
-//     // Update fields
-//     if (name) user.name = name;
-//     if (phone) user.phone = phone;
-//     if (bio) user.bio = bio;
-
-//     await user.save();
-
-//     res.json({
-//       message: "Profile updated successfully",
-//       user: {
-//         id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         phone: user.phone || "",
-//         bio: user.bio || ""
+//       // if a new photo was uploaded
+//       if (req.file) {
+//         user.photo = "/uploads/" + req.file.filename;
 //       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({ message: "Error updating profile" });
+
+//       await user.save();
+
+//       res.json({
+//         message: "Profile updated successfully",
+//         user: {
+//           id: user._id,
+//           name: user.name,
+//           email: user.email,
+//           phone: user.phone,
+//           bio: user.bio,
+//           photo: user.photo,
+//         },
+//       });
+//     } catch (error) {
+//       console.log(error);
+//       res.status(500).json({ message: "Error updating profile" });
+//     }
 //   }
-// });
-
-
-
+// );
 
 router.put(
   "/update-profile",
   authMiddleware,
-  upload.single("photo"),   // <-- IMPORTANT
+  upload.single("photo"),
   async (req, res) => {
     try {
-      const { name, phone, bio } = req.body;
+      const { name, phone, bio, removePhoto } = req.body;
 
       const user = await User.findById(req.user.id);
       if (!user) return res.status(404).json({ message: "User not found" });
@@ -151,7 +156,12 @@ router.put(
       if (phone) user.phone = phone;
       if (bio) user.bio = bio;
 
-      // if a new photo was uploaded
+      // DELETE PHOTO IF REQUESTED
+      if (removePhoto === "true") {
+        user.photo = "";
+      }
+
+      // SAVE NEW PHOTO
       if (req.file) {
         user.photo = "/uploads/" + req.file.filename;
       }
@@ -160,14 +170,7 @@ router.put(
 
       res.json({
         message: "Profile updated successfully",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          bio: user.bio,
-          photo: user.photo,
-        },
+        user,
       });
     } catch (error) {
       console.log(error);
@@ -175,6 +178,7 @@ router.put(
     }
   }
 );
+
 
 router.post("/change-password", authMiddleware, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
