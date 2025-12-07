@@ -5,11 +5,10 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
   const defaultPhoto = "https://cdn-icons-png.flaticon.com/512/848/848006.png";
 
-  // Build correct preview path
   const initialPreview =
     user?.photo
-      ? (user.photo.startsWith("http") 
-          ? user.photo 
+      ? (user.photo.startsWith("http")
+          ? user.photo
           : `http://localhost:4000${user.photo}`)
       : defaultPhoto;
 
@@ -29,9 +28,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
     formData.append("bio", bio);
     formData.append("removePhoto", removePhoto);
 
-    if (photo) {
-      formData.append("photo", photo);
-    }
+    if (photo) formData.append("photo", photo);
 
     try {
       const res = await axios.put(
@@ -47,7 +44,6 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
       const updated = res.data.user;
 
-      // Build full photo URL only if photo exists
       if (updated.photo) {
         updated.photo =
           updated.photo.startsWith("http")
@@ -55,9 +51,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
             : `http://localhost:4000${updated.photo}`;
       }
 
-      // Store updated user in localStorage
       localStorage.setItem("user", JSON.stringify(updated));
-
       onUpdate(updated);
       onClose();
 
@@ -81,18 +75,29 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
-      <div className="bg-white w-full max-w-lg p-6 rounded-2xl shadow-xl animate-fadeUp">
+    // 🌟 Beautiful soft overlay + blur effect
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center p-4 z-50">
 
-        <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
+      {/* 🌟 Glassmorphism modal card */}
+      <div className="
+        w-full max-w-lg p-8 rounded-2xl 
+        bg-white/20 backdrop-blur-2xl 
+        shadow-[0_0_30px_rgba(255,255,255,0.25)]
+        border border-white/40
+        animate-fadeUp
+      ">
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <h2 className="text-2xl font-bold mb-6 text-gray-900">
+          Edit Profile
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-5 text-gray-900">
 
           {/* NAME */}
           <div>
             <label className="font-medium">Name</label>
             <input
-              className="w-full p-2 border rounded-lg mt-1"
+              className="w-full mt-1 p-3 border rounded-lg bg-white/70 focus:outline-none"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -102,7 +107,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
           <div>
             <label className="font-medium">Phone</label>
             <input
-              className="w-full p-2 border rounded-lg mt-1"
+              className="w-full mt-1 p-3 border rounded-lg bg-white/70 focus:outline-none"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
@@ -112,23 +117,26 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
           <div>
             <label className="font-medium">Bio</label>
             <textarea
-              className="w-full p-2 border rounded-lg mt-1"
               rows={3}
+              className="w-full mt-1 p-3 border rounded-lg bg-white/70 focus:outline-none"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
             />
           </div>
 
-          {/* PHOTO UPLOAD */}
+          {/* PHOTO SECTION */}
           <div>
             <label className="font-medium">Profile Photo</label>
 
             <div className="flex items-center gap-4 mt-2">
+
+              {/* Preview */}
               <img
                 src={preview}
                 className="w-20 h-20 rounded-full object-cover border shadow"
               />
 
+              {/* Choose File */}
               <label
                 htmlFor="photoUpload"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition"
@@ -143,7 +151,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
                 onChange={handlePhotoChange}
               />
 
-              {/* REMOVE BUTTON */}
+              {/* Remove */}
               <button
                 type="button"
                 onClick={handleRemovePhoto}
@@ -155,18 +163,18 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
           </div>
 
           {/* BUTTONS */}
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"
-              className="px-4 py-2 bg-gray-300 rounded-lg"
               onClick={onClose}
+              className="px-5 py-2 bg-gray-300/80 rounded-lg hover:bg-gray-400 transition"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
               Save Changes
             </button>
