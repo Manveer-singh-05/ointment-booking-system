@@ -46,6 +46,7 @@ export default function Appointments() {
         bg-white/20 backdrop-blur-2xl border border-white/30
         shadow-2xl float-animation transition-all duration-500
         hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]
+        max-h-fit
       "
       >
         <h1 className="text-4xl font-bold text-gray-900 mb-10 text-center">

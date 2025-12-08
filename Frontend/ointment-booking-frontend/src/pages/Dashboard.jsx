@@ -39,7 +39,7 @@ export default function Dashboard() {
           bg-white/20 backdrop-blur-xl border border-white/30 transition-all duration-500 
       hover:scale-[1.03]
       hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]
-          shadow-2xl float-animation 
+          shadow-2xl float-animation  max-h-fit
         "
       >
         {/* SEARCH + FILTER */}

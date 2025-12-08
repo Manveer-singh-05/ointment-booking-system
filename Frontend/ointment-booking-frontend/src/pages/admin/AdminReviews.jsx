@@ -54,7 +54,7 @@ export default function AdminReviews() {
           shadow-[0_8px_40px_rgba(0,0,0,0.25)]
           float-animation transition-all duration-500
           hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]
-          max-h-[200px]
+          max-h-fit
         "
       >
         <h1 className="text-4xl font-bold mb-8 text-gray-900 drop-shadow flex items-center gap-2">
