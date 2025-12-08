@@ -70,6 +70,7 @@ export default function Dashboard() {
             <option value="Dermatologist">Dermatologist</option>
             <option value="Pediatrician">Pediatrician</option>
             <option value="Physiotherapist">Physiotherapist</option>
+            <option value="Psychiatrist">Psychiatrist</option>
           </select>
         </div>
 

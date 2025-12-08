@@ -53,6 +53,7 @@ export default function ManageProfessionals() {
           shadow-[0_8px_40px_rgba(0,0,0,0.25)]
           float-animation transition-all duration-500
           hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]
+          max-h-fit
         "
       >
         {/* HEADER */}
