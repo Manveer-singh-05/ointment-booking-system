@@ -87,10 +87,18 @@ export default function ManageProfessionals() {
               "
             >
               <img
+                // src={
+                //   pro.image ||
+                //   "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                // }
                 src={
-                  pro.image ||
-                  "https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                }
+  pro.image
+    ? (pro.image.startsWith("http")
+        ? pro.image
+        : `http://localhost:4000${pro.image}`)
+    : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+}
+
                 className="w-24 h-24 rounded-full mx-auto object-cover shadow-md"
                 alt="professional"
               />

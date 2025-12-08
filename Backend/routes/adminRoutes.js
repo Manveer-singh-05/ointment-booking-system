@@ -4,6 +4,7 @@ const Service = require("../models/Service");
 const Booking = require("../models/Booking");
 const Review = require("../models/Review");
 const User = require("../models/User");
+const upload = require("../middleware/upload"); // <-- add this at top
 
 // middleware
 const authMiddleware = require("../middleware/authMiddleware");
@@ -36,20 +37,58 @@ router.post("/professionals", authMiddleware, isAdmin, async (req, res) => {
 });
 
 // Update Professional
-router.put("/professionals/:id", authMiddleware, isAdmin, async (req, res) => {
-  try {
-    const pro = await Professional.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+// router.put("/professionals/:id", authMiddleware, isAdmin, async (req, res) => {
+//   try {
+//     const pro = await Professional.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true }
+//     );
 
-    res.json({ message: "Professional updated", pro });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error updating professional" });
+//     res.json({ message: "Professional updated", pro });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Error updating professional" });
+//   }
+// });
+router.put(
+  "/professionals/:id",
+  authMiddleware,
+  isAdmin,
+  upload.single("photo"),  // IMPORTANT
+  async (req, res) => {
+    try {
+
+      const updateData = {
+        name: req.body.name,
+        specialization: req.body.specialization,
+        description: req.body.description
+      };
+
+      // Remove image if requested
+      if (req.body.removePhoto === "true") {
+        updateData.image = "";
+      }
+
+      // If new image uploaded
+      if (req.file) {
+        updateData.image = "/uploads/" + req.file.filename;
+      }
+
+      const updatedPro = await Professional.findByIdAndUpdate(
+        req.params.id,
+        updateData,
+        { new: true }
+      );
+
+      res.json({ message: "Professional updated", pro: updatedPro });
+
+    } catch (err) {
+      console.log("UPDATE ERROR:", err);
+      res.status(500).json({ message: "Error updating professional" });
+    }
   }
-});
+);
 
 // Delete Professional
 router.delete("/professionals/:id", authMiddleware, isAdmin, async (req, res) => {
