@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import adminBg from "../../assets/images/admindashboard.jpg";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
@@ -39,49 +40,61 @@ export default function AdminBookings() {
   };
 
   return (
-    <div className="min-h-screen pt-24 px-6 bg-gray-100">
+    <div
+      className="min-h-screen pt-24 px-6 flex justify-center"
+      style={{
+        backgroundImage: `url(${adminBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* MAIN CARD */}
       <div
         className="
-          max-w-5xl mx-auto p-10 rounded-3xl shadow-2xl
-          bg-white/30 backdrop-blur-2xl border border-white/40 float-animation
+          w-full max-w-5xl p-10 rounded-3xl
+          bg-white/20 backdrop-blur-2xl border border-white/30
+          shadow-[0_8px_40px_rgba(0,0,0,0.25)]
+          float-animation transition-all duration-500
+          hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]
+          max-h-[600px]
         "
       >
-        <h1 className="text-4xl font-bold mb-8 text-gray-900 flex items-center gap-2">
+        <h1 className="text-4xl font-bold mb-8 text-gray-900 drop-shadow flex items-center gap-2">
           📅 All Bookings
         </h1>
 
         {loading ? (
-          <p className="text-lg text-center">Loading bookings...</p>
+          <p className="text-lg text-center text-gray-900">Loading bookings...</p>
         ) : bookings.length === 0 ? (
-          <p>No bookings found.</p>
+          <p className="text-gray-900 text-center">No bookings found.</p>
         ) : (
           <div className="space-y-6">
             {bookings.map((b) => (
               <div
                 key={b._id}
                 className="
-                  bg-white/60 backdrop-blur-xl p-6 rounded-2xl shadow-lg 
-                  hover:scale-[1.02] transition-all border border-white/30
+                  bg-white/50 backdrop-blur-xl p-6 rounded-2xl shadow-lg 
+                  hover:scale-[1.02] transition-all border border-white/40
                 "
               >
-                <h2 className="text-2xl font-semibold text-gray-800">
+                <h2 className="text-2xl font-semibold text-gray-900">
                   {b.professional || "Unknown Professional"}
                 </h2>
 
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-700 mt-1">
                   👤 <b>{b.clientName}</b> — {b.clientEmail}
                 </p>
 
-                <p className="mt-1 text-gray-600">
+                <p className="mt-1 text-gray-700">
                   🗓️ {b.date} | ⏰ {b.time}
                 </p>
 
                 {b.notes && (
-                  <p className="mt-1 text-gray-700">📝 Notes: {b.notes}</p>
+                  <p className="mt-1 text-gray-800">📝 Notes: {b.notes}</p>
                 )}
 
                 <div className="mt-4">
-                  <label className="font-semibold text-gray-700 mr-2">
+                  <label className="font-semibold text-gray-800 mr-2">
                     Status:
                   </label>
 
@@ -89,7 +102,7 @@ export default function AdminBookings() {
                     value={b.status}
                     onChange={(e) => updateStatus(b._id, e.target.value)}
                     className="
-                      px-4 py-2 rounded-lg border shadow bg-white/70 
+                      px-4 py-2 rounded-xl border shadow bg-white/80 
                       hover:bg-white transition
                     "
                   >
