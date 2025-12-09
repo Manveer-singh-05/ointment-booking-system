@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import bgImage from "../assets/images/professionalprofilef.jpg";
 
 
 export default function ProfessionalDetails() {
@@ -34,8 +34,7 @@ export default function ProfessionalDetails() {
     <div
       className="min-h-screen pt-24 px-6 flex justify-center items-start"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1526253433617-1b1a49a0a997?auto=format&fit=crop&q=80&w=1920')",
+        backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

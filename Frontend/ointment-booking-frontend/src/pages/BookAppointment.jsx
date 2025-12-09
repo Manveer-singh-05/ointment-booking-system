@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import bgImage from "../assets/images/bookappointmentf.jpg";
 export default function BookAppointment() {
   const { professionalId } = useParams();
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ export default function BookAppointment() {
     <div
       className="min-h-screen pt-24 flex justify-center items-start px-6"
       style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1526253433617-1b1a49a0a997?auto=format&fit=crop&q=80&w=1920')",
+        backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

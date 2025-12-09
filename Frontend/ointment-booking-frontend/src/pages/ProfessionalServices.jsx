@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import bgImage from "../assets/images/bookingservicef.jpg";
 
 export default function ProfessionalServices() {
   const { id } = useParams();
@@ -22,7 +23,13 @@ export default function ProfessionalServices() {
   if (!pro) return <p className="pt-24 text-center">Loading...</p>;
 
   return (
-    <div className="min-h-screen pt-24 px-6 flex justify-center">
+    <div className="min-h-screen pt-24 px-6 flex justify-center"
+       style={{
+              backgroundImage: `url(${bgImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+    >
       <div className="w-full max-w-4xl p-8 bg-white/30 backdrop-blur-xl rounded-2xl shadow-xl">
 
         <h1 className="text-3xl font-bold mb-4">
