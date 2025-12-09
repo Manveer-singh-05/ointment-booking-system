@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import adminBg from "../../assets/images/admindashboard.jpg";
+import adminBg from "../../assets/images/managereviewf.jpg";
 
 export default function AdminReviews() {
   const [reviews, setReviews] = useState([]);

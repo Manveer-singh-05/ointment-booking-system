@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import adminBg from "../../assets/images/admindashboard.jpg"; // background for theme
+import adminBg from "../../assets/images/manageprofessionalf.jpg"; // background for theme
 
 export default function ManageProfessionals() {
   const navigate = useNavigate();

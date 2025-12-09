@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import admindashbgImage from "../../assets/images/admindashboard.jpg";
+import admindashbgImage from "../../assets/images/adminpanelf.jpg";
 
 
 export default function AdminDashboard() {

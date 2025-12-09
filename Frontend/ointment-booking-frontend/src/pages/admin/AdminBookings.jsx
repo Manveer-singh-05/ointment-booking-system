@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import adminBg from "../../assets/images/admindashboard.jpg";
+import adminBg from "../../assets/images/viewallbookingsf.jpg";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);

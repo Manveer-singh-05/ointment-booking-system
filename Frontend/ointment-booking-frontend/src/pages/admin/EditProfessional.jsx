@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import adminBg from "../../assets/images/admindashboard.jpg";
+import adminBg from "../../assets/images/editprofessionalf.jpg";
 
 export default function EditProfessional() {
   const { id } = useParams();

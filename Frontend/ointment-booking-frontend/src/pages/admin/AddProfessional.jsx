@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import bgImage from "../../assets/images/addprofessionalf.jpg";
 export default function AddProfessional() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -33,7 +33,12 @@ export default function AddProfessional() {
   };
 
   return (
-    <div className="min-h-screen pt-24 px-6 bg-gray-100">
+    <div className="min-h-screen pt-24 px-6 bg-gray-100" 
+    style={{
+            backgroundImage: `url(${bgImage})`,
+              backgroundSize: "cover",
+        backgroundPosition: "center",
+          }}>
       <div
         className="max-w-3xl mx-auto bg-white/20 backdrop-blur-2xl p-10 rounded-3xl 
           shadow-xl border border-white/40 float-animation"
