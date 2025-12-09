@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import signupBg from "../assets/images/loginpagebackground.avif"; // using same bg for theme
+import signupBg from "../assets/images/loginf.jpg"; // using same bg for theme
 
 export default function Signup() {
   const navigate = useNavigate();

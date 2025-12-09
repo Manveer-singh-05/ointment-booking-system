@@ -12,7 +12,7 @@ export default function ProfessionalServices() {
       .then((res) => res.json())
       .then((data) => setPro(data));
 
-    fetch(`http://localhost:4000/admin/services/${id}`, {
+    fetch(`http://localhost:4000/services/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((res) => res.json())

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import bgImage from "../assets/images/home.webp";
+import bgImage from "../assets/images/homef.jpg";
 
 export default function Home() {
   const navigate = useNavigate();

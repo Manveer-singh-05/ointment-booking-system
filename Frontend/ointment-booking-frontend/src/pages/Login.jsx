@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
-import loginbgImage from "../assets/images/loginpagebackground.avif";
+import loginbgImage from "../assets/images/loginf.jpg";
 
 export default function Login() {
   const navigate = useNavigate();
