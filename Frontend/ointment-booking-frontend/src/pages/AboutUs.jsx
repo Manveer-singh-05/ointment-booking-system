@@ -1,14 +1,15 @@
+
+import bgImage from "../assets/images/aboutusf.jpg";
 export default function AboutUs() {
   return (
     <div
       className="min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1350&q=80')",
+        backgroundImage: `url(${bgImage})`,
       }}
     >
-      <div className="backdrop-blur-xl bg-black/40 min-h-screen px-6 py-24 flex flex-col items-center">
-
+      <div className=" bg-black/40 min-h-screen px-6 py-24 flex flex-col items-center">
+          {/* backdrop-blur-xl */}
         {/* HERO SECTION */}
         <div className="max-w-4xl text-center text-white mb-16">
           <h1 className="text-5xl font-bold drop-shadow-lg">
