@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import EditProfileModal from "../components/EditProfileModal";
 import ChangePasswordModal from "../components/ChangePasswordModal";
+import bgImage from "../assets/images/profilef.jpg";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -41,8 +42,7 @@ export default function Profile() {
     <div
       className="min-h-screen bg-cover bg-center pt-24 flex justify-center items-start px-4"
       style={{
-        backgroundImage:
-          "url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f')",
+        backgroundImage: `url(${bgImage})`,
       }}
     >
       <div

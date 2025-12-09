@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import dashbgImage from "../assets/images/dashboardweb.avif";
+import dashbgImage from "../assets/images/dashboardf.jpg";
 
 export default function Dashboard() {
   const [professionals, setProfessionals] = useState([]);
