@@ -85,7 +85,7 @@ router.put(
 
     } catch (err) {
       console.log("UPDATE ERROR:", err);
-      res.status(500).json({ message: "Error updating professional" });
+      res.status(500).json({ message: "Error updating professional" }); 
     }
   }
 );
@@ -147,7 +147,7 @@ router.post("/services", authMiddleware, isAdmin, async (req, res) => {
     const service = await Service.create({
       professionalId,
       name,
-      durationMinutes: duration,
+      duration,
       price
     });
 
@@ -163,7 +163,7 @@ router.put("/services/:id", authMiddleware, isAdmin, async (req, res) => {
   try {
     const updated = await Service.findByIdAndUpdate(req.params.id, {
       name: req.body.name,
-      durationMinutes: req.body.duration,
+      duration: req.body.duration,
       price: req.body.price
     }, { new: true });
 

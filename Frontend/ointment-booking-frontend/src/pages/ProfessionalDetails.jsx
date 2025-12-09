@@ -1,15 +1,30 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+
+
 export default function ProfessionalDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [pro, setPro] = useState(null);
 
+  const [pro, setPro] = useState(null);
+  const [services, setServices] = useState([]);
+
+  const user = JSON.parse(localStorage.getItem("user")); // ⭐ for admin check
+
+  // Fetch Professional Info
   useEffect(() => {
     fetch(`http://localhost:4000/professionals/${id}`)
       .then((res) => res.json())
       .then((data) => setPro(data))
+      .catch((err) => console.log(err));
+  }, [id]);
+
+  // Fetch Services of this Professional (PUBLIC route)
+  useEffect(() => {
+    fetch(`http://localhost:4000/services/${id}`)
+      .then((res) => res.json())
+      .then((data) => setServices(data))
       .catch((err) => console.log(err));
   }, [id]);
 
@@ -46,20 +61,16 @@ export default function ProfessionalDetails() {
               {pro.specialization}
             </p>
 
-            {/* EXPERIENCE */}
             <p className="mt-1 text-gray-700">
               <b>Experience:</b> {pro.experience || "5+ years"}
             </p>
 
-            {/* RATING */}
             <div className="flex items-center mt-2">
               {Array.from({ length: 5 }).map((_, i) => (
                 <span
                   key={i}
                   className={`text-2xl ${
-                    i < (pro.rating || 4)
-                      ? "text-yellow-400"
-                      : "text-gray-300"
+                    i < (pro.rating || 4) ? "text-yellow-400" : "text-gray-300"
                   }`}
                 >
                   ★
@@ -71,12 +82,13 @@ export default function ProfessionalDetails() {
           </div>
         </div>
 
-        {/* DIVIDER */}
         <div className="border-b border-white/50 my-8"></div>
 
         {/* WORKING HOURS */}
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-3">Working Hours</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-3">
+            Working Hours
+          </h2>
           <div className="bg-white/40 p-4 rounded-xl shadow-inner">
             <p className="text-gray-800">Mon–Fri: 10 AM – 6 PM</p>
             <p className="text-gray-800">Sat: 10 AM – 2 PM</p>
@@ -84,33 +96,54 @@ export default function ProfessionalDetails() {
           </div>
         </div>
 
-        {/* SERVICES SECTION */}
-        {pro.services?.length > 0 && (
-          <div className="mt-10">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Services Offered
-            </h2>
+        {/* ⭐ SERVICES SECTION ⭐ */}
+        {/* <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+            Services Offered
+          </h2>
 
+          {services.length === 0 ? (
+            <p className="text-gray-700">No services added yet.</p>
+          ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {pro.services.map((service) => (
+              {services.map((s) => (
                 <div
-                  key={service._id}
+                  key={s._id}
                   className="
                     bg-white/30 p-4 rounded-xl shadow-md 
-                    hover:shadow-lg hover:bg-white/40 transition-all
+                    hover:shadow-lg hover:bg-white/40 transition-all cursor-pointer
                   "
+                  onClick={() => navigate(`/book/${pro._id}`)} // user can book
                 >
-                  <h3 className="text-lg font-semibold">{service.name}</h3>
-                  <p className="text-sm text-gray-700 mt-1">
-                    {service.description}
-                  </p>
+                  <h3 className="text-lg font-semibold">{s.name}</h3>
+
                   <p className="text-sm mt-1 font-medium text-blue-700">
-                    Duration: {service.durationMinutes} minutes
+                    Duration: {s.durationMinutes} minutes
+                  </p>
+
+                  <p className="text-sm font-semibold mt-1 text-green-700">
+                    ₹ {s.price}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
+          )}
+        </div> */}
+        <button
+  onClick={() => navigate(`/professional/${pro._id}/services`)}
+  className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+>
+  View Services
+</button>
+
+        {/* ⭐ ADMIN — Add Service Button ⭐ */}
+        {user?.role === "admin" && (
+          <button
+            onClick={() => navigate("/admin/services")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+          >
+            + Add Service
+          </button>
         )}
 
         {/* REVIEWS */}
@@ -118,17 +151,11 @@ export default function ProfessionalDetails() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
 
           <div className="space-y-4">
+            {/* Static Example */}
             <div className="bg-white/40 p-4 rounded-xl shadow">
               <p className="font-semibold">Amit Sharma</p>
               <p className="text-gray-600">
                 ⭐⭐⭐⭐⭐ Great experience! Very professional and polite.
-              </p>
-            </div>
-
-            <div className="bg-white/40 p-4 rounded-xl shadow">
-              <p className="font-semibold">Priya Verma</p>
-              <p className="text-gray-600">
-                ⭐⭐⭐⭐ Helpful and knowledgeable. Recommended!
               </p>
             </div>
           </div>
@@ -145,7 +172,6 @@ export default function ProfessionalDetails() {
           </button>
         </div>
 
-        {/* BOOK BUTTON */}
         <button
           onClick={() => navigate(`/book/${pro._id}`)}
           className="

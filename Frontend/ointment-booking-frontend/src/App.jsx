@@ -23,6 +23,8 @@ import ManageServices from "./pages/admin/ManageServices";
 import EditProfessional from "./pages/admin/EditProfessional"; 
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminReviews from "./pages/admin/AdminReviews";
+import AdminProServices from "./pages/admin/AdminProServices";
+import ProfessionalServices from "./pages/ProfessionalServices";
 
 
 
@@ -81,6 +83,8 @@ function AppLayout() {
           }
         />
         <Route path="/professional/:id" element={<ProfessionalDetails />} />
+        <Route path="/admin/professional/:id/services" element={<AdminProServices />} />
+
         <Route
           path="/about"
           element={
@@ -93,6 +97,10 @@ function AppLayout() {
          <Route path="/admin/edit-professional/:id" element={<EditProfessional />} />
         <Route path="/book/:professionalId" element={<BookAppointment />} />
         <Route path="/admin/services" element={<ManageServices />} />
+        <Route path="/professional/:id/services" element={<ProfessionalServices />} />
+
+        {/* <Route path="/admin/services/add/:professionalId" element={<ManageServices />} /> */}
+
       </Routes>
     </>
   );

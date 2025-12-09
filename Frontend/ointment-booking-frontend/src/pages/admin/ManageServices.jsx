@@ -13,7 +13,8 @@ export default function ManageServices() {
   });
   const [editingId, setEditingId] = useState(null);
 
-  const API = "http://localhost:4000/api/admin";
+  // ✅ Correct API base URL
+  const API = "http://localhost:4000/admin/services";
 
   // Load all professionals
   const loadProfessionals = async () => {
@@ -28,9 +29,12 @@ export default function ManageServices() {
   // Load all services
   const loadServices = async () => {
     try {
-      const res = await axios.get(`${API}/services-all`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      const res = await axios.get(
+        "http://localhost:4000/admin/services-all",
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setServices(res.data);
     } catch (err) {
       console.log("Error loading services:", err);
@@ -46,30 +50,44 @@ export default function ManageServices() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // Add or update service
   const saveService = async () => {
     if (!form.name || !form.duration || !form.price || !form.professionalId)
       return alert("All fields are required");
 
+    const data = {
+      name: form.name,
+      duration: Number(form.duration),
+      price: Number(form.price),
+      professionalId: form.professionalId,
+    };
+
     try {
       if (editingId) {
+        // UPDATE
         await axios.put(
-          `${API}/services/${editingId}`,
-          form,
-          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+          `${API}/${editingId}`,
+          data,
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }}
         );
       } else {
+        // CREATE
         await axios.post(
-          `${API}/services`,
-          form,
-          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+          API,
+          data,
+          { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }}
         );
       }
 
+      alert("Service saved!");
+
       setForm({ name: "", duration: "", price: "", professionalId: "" });
       setEditingId(null);
+
       loadServices();
     } catch (err) {
       console.log("Error saving service:", err);
+      alert("Failed to save service.");
     }
   };
 
@@ -77,9 +95,9 @@ export default function ManageServices() {
     setEditingId(service._id);
     setForm({
       name: service.name,
-      duration: service.durationMinutes,
+      duration: service.duration,
       price: service.price,
-      professionalId: service.professionalId?._id || ""
+      professionalId: service.professionalId?._id || "",
     });
   };
 
@@ -87,10 +105,9 @@ export default function ManageServices() {
     if (!window.confirm("Delete this service?")) return;
 
     try {
-      await axios.delete(`${API}/services/${sid}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      await axios.delete(`${API}/${sid}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-
       loadServices();
     } catch (err) {
       console.log("Error deleting service:", err);
@@ -106,137 +123,84 @@ export default function ManageServices() {
         backgroundPosition: "center",
       }}
     >
-
-      {/* GLASS CARD CONTAINER */}
       <div
         className="
-          w-full max-w-5xl p-10 rounded-3xl
-          bg-white/20 backdrop-blur-2xl border border-white/30
-          shadow-[0_8px_40px_rgba(0,0,0,0.25)]
-          float-animation transition-all duration-500
-          hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]
-          max-h-fit 
+          w-full max-w-5xl p-10 rounded-3xl bg-white/20 backdrop-blur-2xl
+          border border-white/30 shadow-lg 
         "
       >
+        <h2 className="text-3xl font-bold mb-8 text-gray-900">Manage Services</h2>
 
-        <h2 className="text-3xl font-bold mb-8 text-gray-900 drop-shadow">
-          Manage Services
-        </h2>
+        {/* Form */}
+        <div className="bg-white/50 p-6 rounded-2xl shadow-inner mb-10">
+          <input
+            name="name"
+            placeholder="Service Name"
+            value={form.name}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl border mb-3"
+          />
 
-        {/* FORM CARD */}
-        <div  
-          className="
-            space-y-4 bg-white/50 backdrop-blur-xl p-6 rounded-2xl
-            shadow-inner border border-white/40 mb-10 
-          "
-        >
-          <div className="space-y-4">
+          <input
+            name="duration"
+            placeholder="Duration (minutes)"
+            value={form.duration}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl border mb-3"
+          />
 
-            <input
-              name="name"
-              placeholder="Service Name"
-              value={form.name}
-              onChange={handleChange}
-              className="
-                w-full p-3 rounded-xl border bg-white/70 backdrop-blur-sm
-              "
-            />
+          <input
+            name="price"
+            placeholder="Price (Rs)"
+            value={form.price}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl border mb-3"
+          />
 
-            <input
-              name="duration"
-              placeholder="Duration (minutes)"
-              value={form.duration}
-              onChange={handleChange}
-              className="
-                w-full p-3 rounded-xl border bg-white/70 backdrop-blur-sm
-              "
-            />
+          <select
+            name="professionalId"
+            value={form.professionalId}
+            onChange={handleChange}
+            className="w-full p-3 rounded-xl border mb-3"
+          >
+            <option value="">Select Professional</option>
+            {professionals.map((pro) => (
+              <option key={pro._id} value={pro._id}>
+                {pro.name} — {pro.specialization}
+              </option>
+            ))}
+          </select>
 
-            <input
-              name="price"
-              placeholder="Price (Rs)"
-              value={form.price}
-              onChange={handleChange}
-              className="
-                w-full p-3 rounded-xl border bg-white/70 backdrop-blur-sm
-              "
-            />
-
-            {/* PROFESSIONAL DROPDOWN */}
-            <select
-              name="professionalId"
-              value={form.professionalId}
-              onChange={handleChange}
-              className="
-                w-full p-3 rounded-xl border bg-white/70 backdrop-blur-sm
-              "
-            >
-              <option value="">Select Professional</option>
-              {professionals.map((pro) => (
-                <option key={pro._id} value={pro._id}>
-                  {pro.name} — {pro.specialization}
-                </option>
-              ))}
-            </select>
-
-            <button
-              onClick={saveService}
-              className="
-                w-full py-3 bg-blue-600 text-white rounded-xl
-                hover:bg-blue-700 hover:scale-[1.03] active:scale-95
-                transition-all shadow-lg
-              "
-            >
-              {editingId ? "Update Service" : "Add Service"}
-            </button>
-          </div>
+          <button
+            onClick={saveService}
+            className="w-full py-3 bg-blue-600 text-white rounded-xl shadow"
+          >
+            {editingId ? "Update Service" : "Add Service"}
+          </button>
         </div>
 
-        <h3 className="text-xl font-semibold mb-4 text-gray-900">Existing Services</h3>
+        {/* Services List */}
+        <h3 className="text-xl font-semibold mb-4 text-gray-900">
+          Existing Services
+        </h3>
 
-        {/* SERVICES LIST */}
         <div className="space-y-4">
           {services.map((s) => (
-            <div
-              key={s._id}
-              className="
-                bg-white/40 backdrop-blur-xl p-5 rounded-2xl shadow
-                border border-white/40 flex justify-between items-center
-                hover:scale-[1.02] transition-all
-              "
-            >
+            <div key={s._id}
+              className="bg-white/40 p-5 rounded-xl shadow flex justify-between">
               <div>
-                <p className="text-lg font-bold text-gray-900">{s.name}</p>
-
-                <p className="text-gray-700">
-                  {s.durationMinutes} min — ₹{s.price}
-                </p>
-
-                <p className="text-gray-600 text-sm">
-                  👨‍⚕️ {s.professionalId?.name || "Unknown Professional"}
-                </p>
+                <p className="text-lg font-bold">{s.name}</p>
+                <p>{s.duration} min — ₹{s.price}</p>
+                <p className="text-sm">👨‍⚕️ {s.professionalId?.name}</p>
               </div>
 
               <div className="flex gap-3">
-                <button
-                  onClick={() => startEdit(s)}
-                  className="
-                    px-4 py-2 bg-yellow-500 text-white rounded-xl 
-                    hover:bg-yellow-600 hover:scale-[1.04] active:scale-95 
-                    transition-all
-                  "
-                >
+                <button onClick={() => startEdit(s)}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-xl">
                   Edit
                 </button>
-
-                <button
-                  onClick={() => deleteService(s._id)}
-                  className="
-                    px-4 py-2 bg-red-600 text-white rounded-xl 
-                    hover:bg-red-700 hover:scale-[1.04] active:scale-95 
-                    transition-all
-                  "
-                >
+                <button onClick={() => deleteService(s._id)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-xl">
                   Delete
                 </button>
               </div>
