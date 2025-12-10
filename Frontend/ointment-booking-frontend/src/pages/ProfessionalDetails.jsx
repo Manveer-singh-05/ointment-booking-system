@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import bgImage from "../assets/images/professionalprofilef.jpg";
 
-
 export default function ProfessionalDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +27,8 @@ export default function ProfessionalDetails() {
       .catch((err) => console.log(err));
   }, [id]);
 
-  if (!pro) return <p className="pt-24 text-center text-gray-600">Loading...</p>;
+  if (!pro)
+    return <p className="pt-24 text-center text-gray-600">Loading...</p>;
 
   return (
     <div
@@ -49,7 +49,8 @@ export default function ProfessionalDetails() {
         <div className="flex flex-col md:flex-row items-center gap-8">
           <img
             src={
-              pro.image || "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+              pro.image ||
+              "https://cdn-icons-png.flaticon.com/512/847/847969.png"
             }
             className="w-40 h-40 rounded-full shadow-2xl object-cover"
           />
@@ -129,11 +130,11 @@ export default function ProfessionalDetails() {
           )}
         </div> */}
         <button
-  onClick={() => navigate(`/professional/${pro._id}/services`)}
-  className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
->
-  View Services
-</button>
+          onClick={() => navigate(`/professional/${pro._id}/services`)}
+          className="mt-6 px-5 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+        >
+          View Services
+        </button>
 
         {/* ⭐ ADMIN — Add Service Button ⭐ */}
         {user?.role === "admin" && (
@@ -146,78 +147,80 @@ export default function ProfessionalDetails() {
         )}
 
         {/* REVIEWS */}
-       {/* ⭐ REVIEWS SECTION (DYNAMIC) ⭐ */}
-<div className="mt-10">
-  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
+        {/* ⭐ REVIEWS SECTION (DYNAMIC) ⭐ */}
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
 
-  {/* User Review Form (only visible if logged in & not admin) */}
-  {user && user.role !== "admin" && (
-    <div className="bg-white/40 p-4 rounded-xl shadow mb-6">
-      <h3 className="text-lg font-semibold mb-2 text-gray-800">Write a Review</h3>
+          {/* User Review Form (only visible if logged in & not admin) */}
+          {user && user.role !== "admin" && (
+            <div className="bg-white/40 p-4 rounded-xl shadow mb-6">
+              <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                Write a Review
+              </h3>
 
-      <select
-        className="w-full p-2 rounded-lg border mb-3"
-        value={null}
-        onChange={(e) =>
-          setServices((prev) => ({
-            ...prev,
-            userRating: Number(e.target.value),
-          }))
-        }
-      >
-        <option value="">Select Rating</option>
-        {[1, 2, 3, 4, 5].map((r) => (
-          <option key={r} value={r}>
-            {r} ★
-          </option>
-        ))}
-      </select>
+              <select
+                className="w-full p-2 rounded-lg border mb-3"
+                value={null}
+                onChange={(e) =>
+                  setServices((prev) => ({
+                    ...prev,
+                    userRating: Number(e.target.value),
+                  }))
+                }
+              >
+                <option value="">Select Rating</option>
+                {[1, 2, 3, 4, 5].map((r) => (
+                  <option key={r} value={r}>
+                    {r} ★
+                  </option>
+                ))}
+              </select>
 
-      <textarea
-        placeholder="Write your review here..."
-        className="w-full p-3 rounded-lg border bg-white/70 mb-3"
-        onChange={(e) =>
-          setServices((prev) => ({
-            ...prev,
-            userComment: e.target.value,
-          }))
-        }
-      ></textarea>
+              <textarea
+                placeholder="Write your review here..."
+                className="w-full p-3 rounded-lg border bg-white/70 mb-3"
+                onChange={(e) =>
+                  setServices((prev) => ({
+                    ...prev,
+                    userComment: e.target.value,
+                  }))
+                }
+              ></textarea>
 
-      <button
-        onClick={async () => {
-          if (!services.userRating || !services.userComment)
-            return alert("Please provide rating & review.");
+              <button
+                onClick={async () => {
+                  if (!services.userRating || !services.userComment)
+                    return alert("Please provide rating & review.");
 
-          const res = await fetch("http://localhost:4000/reviews", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            body: JSON.stringify({
-              professionalId: id,
-              rating: services.userRating,
-              reviewText: services.userComment,
-            }),
-          });
+                  const res = await fetch("http://localhost:4000/reviews", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify({
+                      professionalId: id,
+                      rating: services.userRating,
+                      reviewText: services.userComment,
+                    }),
+                  });
 
-          const data = await res.json();
-          alert(data.message);
+                  const data = await res.json();
+                  alert(data.message);
 
-          // Reload page reviews
-          window.location.reload();
-        }}
-        className="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700"
-      >
-        Submit Review
-      </button>
-    </div>
-  )}
+                  // Reload page reviews
+                  window.location.reload();
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700"
+              >
+                Submit Review
+              </button>
+            </div>
+          )}
 
-  {/* ⭐ FETCH REVIEWS ⭐ */}
-  <ReviewList professionalId={id} />
-</div>
+          {/* ⭐ FETCH REVIEWS ⭐ */}
+          <ReviewList professionalId={id} />
+        </div>
 
         {/* CONTACT BUTTONS */}
         <div className="mt-10 flex gap-4">
@@ -243,6 +246,57 @@ export default function ProfessionalDetails() {
     </div>
   );
 }
+// function ReviewList({ professionalId }) {
+//   const [reviews, setReviews] = useState([]);
+
+//   useEffect(() => {
+//     fetch(`http://localhost:4000/reviews/${professionalId}`)
+//       .then((res) => res.json())
+//       .then((data) => setReviews(data));
+//   }, [professionalId]);
+
+//   if (reviews.length === 0)
+//     return <p className="text-gray-700">No reviews yet.</p>;
+
+//   return (
+//     <div className="space-y-4">
+//       {reviews.map((r) => (
+//         <div key={r._id} className="bg-white/40 p-4 rounded-xl shadow">
+//           {/* <p className="font-semibold flex items-center gap-2">
+//             <img
+//               src={
+//                 r.userId?.photo ||
+//                 "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+//               }
+//               className="w-8 h-8 rounded-full"
+//             />
+//             {r.userId?.name || "Unknown User"}
+//           </p> */}
+//           <p className="font-semibold flex items-center gap-2">
+//             <img
+//               src={
+//                 r.userId?.photo && r.userId.photo.trim() !== ""
+//                   ? `http://localhost:4000${r.userId.photo}`
+//                   : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+//               }
+//               className="w-8 h-8 rounded-full object-cover shadow"
+//               alt="User"
+//             />
+//             {r.userId?.name || "Unknown User"}
+//           </p>
+
+//           {/* Stars */}
+//           <p className="text-yellow-500 text-lg">
+//             {"★".repeat(r.rating)}{" "}
+//             <span className="text-gray-400">{"★".repeat(5 - r.rating)}</span>
+//           </p>
+
+//           <p className="text-gray-700 mt-1">{r.comment}</p>
+//         </div>
+//       ))}
+//     </div>
+//   );
+//}
 function ReviewList({ professionalId }) {
   const [reviews, setReviews] = useState([]);
 
@@ -260,30 +314,53 @@ function ReviewList({ professionalId }) {
       {reviews.map((r) => (
         <div
           key={r._id}
-          className="bg-white/40 p-4 rounded-xl shadow"
+          className="bg-white/40 p-4 rounded-xl shadow backdrop-blur-xl"
         >
+          {/* USER PHOTO + NAME */}
           <p className="font-semibold flex items-center gap-2">
             <img
               src={
-                r.userId?.photo ||
-                "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                r.userId?.photo && r.userId.photo.trim() !== ""
+                  ? `http://localhost:4000${r.userId.photo}`
+                  : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
               }
-              className="w-8 h-8 rounded-full"
+              className="w-8 h-8 rounded-full object-cover shadow"
+              alt="User"
             />
             {r.userId?.name || "Unknown User"}
           </p>
 
-          {/* Stars */}
-          <p className="text-yellow-500 text-lg">
-            {"★".repeat(r.rating)}{" "}
-            <span className="text-gray-400">
-              {"★".repeat(5 - r.rating)}
-            </span>
-          </p>
+          {/* ⭐ ANIMATED STARS ⭐ */}
+          <div className="flex items-center gap-1 mt-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                className={`text-xl transition-all duration-300 ${
+                  i < r.rating ? "text-yellow-400 scale-110" : "text-gray-300"
+                }`}
+                style={{
+                  animation: i < r.rating ? "pop 0.3s ease forwards" : "none",
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </div>
 
-          <p className="text-gray-700 mt-1">{r.comment}</p>
+          {/* REVIEW TEXT */}
+          <p className="text-gray-700 mt-2">{r.reviewText}</p>
+
+          {/* 📅 DATE */}
+          <p className="text-xs text-gray-500 mt-1">
+            {new Date(r.createdAt).toLocaleDateString("en-IN", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </p>
         </div>
       ))}
     </div>
   );
 }
+
