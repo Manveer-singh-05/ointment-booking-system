@@ -38,7 +38,7 @@ export default function Home() {
             Welcome{user && `, ${user.name}`} 👋
           </h1>
 
-          <p className="text-gray-700 font-medium text-lg mb-6 leading-relaxed">
+          <p className="text-gray-900 font-medium text-lg mb-6 leading-relaxed">
             Book appointments with doctors, tutors, consultants and other
             professionals — all in one place. Manage your schedule effortlessly
             with <b>ProAppoint</b>.
