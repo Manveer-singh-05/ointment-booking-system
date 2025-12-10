@@ -146,19 +146,78 @@ export default function ProfessionalDetails() {
         )}
 
         {/* REVIEWS */}
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
+       {/* ⭐ REVIEWS SECTION (DYNAMIC) ⭐ */}
+<div className="mt-10">
+  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Reviews</h2>
 
-          <div className="space-y-4">
-            {/* Static Example */}
-            <div className="bg-white/40 p-4 rounded-xl shadow">
-              <p className="font-semibold">Amit Sharma</p>
-              <p className="text-gray-600">
-                ⭐⭐⭐⭐⭐ Great experience! Very professional and polite.
-              </p>
-            </div>
-          </div>
-        </div>
+  {/* User Review Form (only visible if logged in & not admin) */}
+  {user && user.role !== "admin" && (
+    <div className="bg-white/40 p-4 rounded-xl shadow mb-6">
+      <h3 className="text-lg font-semibold mb-2 text-gray-800">Write a Review</h3>
+
+      <select
+        className="w-full p-2 rounded-lg border mb-3"
+        value={null}
+        onChange={(e) =>
+          setServices((prev) => ({
+            ...prev,
+            userRating: Number(e.target.value),
+          }))
+        }
+      >
+        <option value="">Select Rating</option>
+        {[1, 2, 3, 4, 5].map((r) => (
+          <option key={r} value={r}>
+            {r} ★
+          </option>
+        ))}
+      </select>
+
+      <textarea
+        placeholder="Write your review here..."
+        className="w-full p-3 rounded-lg border bg-white/70 mb-3"
+        onChange={(e) =>
+          setServices((prev) => ({
+            ...prev,
+            userComment: e.target.value,
+          }))
+        }
+      ></textarea>
+
+      <button
+        onClick={async () => {
+          if (!services.userRating || !services.userComment)
+            return alert("Please provide rating & review.");
+
+          const res = await fetch("http://localhost:4000/reviews", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+              professionalId: id,
+              rating: services.userRating,
+              reviewText: services.userComment,
+            }),
+          });
+
+          const data = await res.json();
+          alert(data.message);
+
+          // Reload page reviews
+          window.location.reload();
+        }}
+        className="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700"
+      >
+        Submit Review
+      </button>
+    </div>
+  )}
+
+  {/* ⭐ FETCH REVIEWS ⭐ */}
+  <ReviewList professionalId={id} />
+</div>
 
         {/* CONTACT BUTTONS */}
         <div className="mt-10 flex gap-4">
@@ -181,6 +240,50 @@ export default function ProfessionalDetails() {
           Book Appointment
         </button>
       </div>
+    </div>
+  );
+}
+function ReviewList({ professionalId }) {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://localhost:4000/reviews/${professionalId}`)
+      .then((res) => res.json())
+      .then((data) => setReviews(data));
+  }, [professionalId]);
+
+  if (reviews.length === 0)
+    return <p className="text-gray-700">No reviews yet.</p>;
+
+  return (
+    <div className="space-y-4">
+      {reviews.map((r) => (
+        <div
+          key={r._id}
+          className="bg-white/40 p-4 rounded-xl shadow"
+        >
+          <p className="font-semibold flex items-center gap-2">
+            <img
+              src={
+                r.userId?.photo ||
+                "https://cdn-icons-png.flaticon.com/512/847/847969.png"
+              }
+              className="w-8 h-8 rounded-full"
+            />
+            {r.userId?.name || "Unknown User"}
+          </p>
+
+          {/* Stars */}
+          <p className="text-yellow-500 text-lg">
+            {"★".repeat(r.rating)}{" "}
+            <span className="text-gray-400">
+              {"★".repeat(5 - r.rating)}
+            </span>
+          </p>
+
+          <p className="text-gray-700 mt-1">{r.comment}</p>
+        </div>
+      ))}
     </div>
   );
 }
