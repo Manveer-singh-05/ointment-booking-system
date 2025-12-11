@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import loginbgImage from "../assets/images/loginf.jpg";
 
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -135,7 +136,8 @@ export default function Login() {
               </span>
             </div>
 
-            <p className="text-right text-sm text-blue-600 mb-4 cursor-pointer hover:underline">
+            <p className="text-right text-sm text-blue-600 mb-4 cursor-pointer hover:underline"
+             onClick={() => navigate("/forgot-password")}>
               Forgot Password?
             </p>
 

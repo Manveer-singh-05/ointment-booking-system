@@ -31,7 +31,7 @@ function AppLayout() {
   const location = useLocation();
 
   // Pages where Navbar should NOT appear
-  const hideNavbarOn = ["/", "/signup"];
+  const hideNavbarOn = ["/", "/signup","/forgot-password"];
 
   const shouldHideNavbar = hideNavbarOn.includes(location.pathname);
   const isLoggedIn = localStorage.getItem("token");
@@ -45,6 +45,8 @@ function AppLayout() {
         {/* Public Pages */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+        
 
         {/* Protected Pages */}
         <Route
@@ -101,7 +103,7 @@ function AppLayout() {
           path="/professional/:id/services"
           element={<ProfessionalServices />}
         />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+       
 
         {/* <Route path="/admin/services/add/:professionalId" element={<ManageServices />} /> */}
       </Routes>

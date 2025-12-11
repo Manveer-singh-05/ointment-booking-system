@@ -8,7 +8,6 @@ export default function ForgotPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  // STEP 1 – Send OTP
   const sendOtp = async () => {
     try {
       await axios.post("http://localhost:4000/auth/forgot-password", { email });
@@ -19,7 +18,6 @@ export default function ForgotPassword() {
     }
   };
 
-  // STEP 2 – Submit OTP + New Password
   const resetPassword = async () => {
     try {
       await axios.post("http://localhost:4000/auth/reset-password", {
@@ -38,11 +36,9 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="bg-white p-10 rounded-xl shadow-xl w-[400px]">
-        <h2 className="text-2xl font-semibold mb-4 text-center">
-          Forgot Password
-        </h2>
 
-        {/* STEP 1: ENTER EMAIL */}
+        <h2 className="text-2xl font-semibold mb-4 text-center">Forgot Password</h2>
+
         {step === 1 && (
           <>
             <input
@@ -61,7 +57,6 @@ export default function ForgotPassword() {
           </>
         )}
 
-        {/* STEP 2: ENTER OTP + NEW PASSWORD */}
         {step === 2 && (
           <>
             <input
