@@ -169,7 +169,7 @@ router.post("/forgot-password", async (req, res) => {
 
     // SEND EMAIL
     await transporter.sendMail({
-      from: "YOUR_EMAIL@gmail.com",
+      from: "manveersingh0501l@gmail.com",
       to: email,
       subject: "Password Reset OTP",
       text: `Your password reset OTP is ${otp}. It expires in 10 minutes.`
