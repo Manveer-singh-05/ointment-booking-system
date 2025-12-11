@@ -20,18 +20,12 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManageProfessionals from "./pages/admin/ManageProfessionals";
 import AddProfessional from "./pages/admin/AddProfessional";
 import ManageServices from "./pages/admin/ManageServices";
-import EditProfessional from "./pages/admin/EditProfessional"; 
+import EditProfessional from "./pages/admin/EditProfessional";
 import AdminBookings from "./pages/admin/AdminBookings";
 import AdminReviews from "./pages/admin/AdminReviews";
 import AdminProServices from "./pages/admin/AdminProServices";
 import ProfessionalServices from "./pages/ProfessionalServices";
-
-
-
-
-
-
-
+import ForgotPassword from "./pages/ForgotPassword";
 
 function AppLayout() {
   const location = useLocation();
@@ -64,7 +58,7 @@ function AppLayout() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/professionals" element={<ManageProfessionals />} />
         <Route path="/admin/bookings" element={<AdminBookings />} />
-<Route path="/admin/reviews" element={<AdminReviews />} />
+        <Route path="/admin/reviews" element={<AdminReviews />} />
         <Route
           path="/dashboard"
           element={
@@ -83,7 +77,10 @@ function AppLayout() {
           }
         />
         <Route path="/professional/:id" element={<ProfessionalDetails />} />
-        <Route path="/admin/professional/:id/services" element={<AdminProServices />} />
+        <Route
+          path="/admin/professional/:id/services"
+          element={<AdminProServices />}
+        />
 
         <Route
           path="/about"
@@ -94,13 +91,19 @@ function AppLayout() {
           }
         />
         <Route path="/admin/add-professional" element={<AddProfessional />} />
-         <Route path="/admin/edit-professional/:id" element={<EditProfessional />} />
+        <Route
+          path="/admin/edit-professional/:id"
+          element={<EditProfessional />}
+        />
         <Route path="/book/:professionalId" element={<BookAppointment />} />
         <Route path="/admin/services" element={<ManageServices />} />
-        <Route path="/professional/:id/services" element={<ProfessionalServices />} />
+        <Route
+          path="/professional/:id/services"
+          element={<ProfessionalServices />}
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* <Route path="/admin/services/add/:professionalId" element={<ManageServices />} /> */}
-
       </Routes>
     </>
   );

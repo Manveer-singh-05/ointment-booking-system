@@ -139,5 +139,78 @@ router.post("/change-password", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+
+// EMAIL CONFIG
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "YOUR_EMAIL@gmail.com",
+    pass: "YOUR_APP_PASSWORD"
+  }
+});
+
+// ---------------- FORGOT PASSWORD ----------------
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).json({ message: "User not found" });
+
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.resetOTP = otp;
+    user.resetOTPExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+    await user.save();
+
+    // SEND EMAIL
+    await transporter.sendMail({
+      from: "YOUR_EMAIL@gmail.com",
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your password reset OTP is ${otp}. It expires in 10 minutes.`
+    });
+
+    res.json({ message: "OTP sent to your email" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ---------------- RESET PASSWORD ----------------
+router.post("/reset-password", async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).json({ message: "User not found" });
+
+    if (user.resetOTP !== otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    if (Date.now() > user.resetOTPExpiry)
+      return res.status(400).json({ message: "OTP expired" });
+
+    user.password = await bcrypt.hash(newPassword, 10);
+
+    // Clear otp
+    user.resetOTP = null;
+    user.resetOTPExpiry = null;
+
+    await user.save();
+
+    res.json({ message: "Password reset successfully" });
+
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

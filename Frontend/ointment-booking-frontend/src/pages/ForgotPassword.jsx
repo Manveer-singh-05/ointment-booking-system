@@ -2,12 +2,37 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function ForgotPassword() {
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleReset = async () => {
-    await axios.post("http://localhost:4000/auth/forgot-password", { email });
-    setMessage("Password reset link sent to your email!");
+  // STEP 1 – Send OTP
+  const sendOtp = async () => {
+    try {
+      await axios.post("http://localhost:4000/auth/forgot-password", { email });
+      setStep(2);
+      setMessage("OTP sent to your email!");
+    } catch (err) {
+      setMessage("Email not found");
+    }
+  };
+
+  // STEP 2 – Submit OTP + New Password
+  const resetPassword = async () => {
+    try {
+      await axios.post("http://localhost:4000/auth/reset-password", {
+        email,
+        otp,
+        newPassword
+      });
+
+      setMessage("Password reset successfully!");
+      setStep(3);
+    } catch (err) {
+      setMessage("Invalid OTP or expired");
+    }
   };
 
   return (
@@ -17,21 +42,52 @@ export default function ForgotPassword() {
           Forgot Password
         </h2>
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className="w-full border px-4 py-3 rounded-lg mb-4"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {/* STEP 1: ENTER EMAIL */}
+        {step === 1 && (
+          <>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="w-full border px-4 py-3 rounded-lg mb-4"
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <button 
-          onClick={handleReset}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
-        >
-          Send Reset Link
-        </button>
+            <button
+              onClick={sendOtp}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+            >
+              Send OTP
+            </button>
+          </>
+        )}
 
-        {message && <p className="text-green-600 mt-3">{message}</p>}
+        {/* STEP 2: ENTER OTP + NEW PASSWORD */}
+        {step === 2 && (
+          <>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              className="w-full border px-4 py-3 rounded-lg mb-4"
+              onChange={(e) => setOtp(e.target.value)}
+            />
+
+            <input
+              type="password"
+              placeholder="New Password"
+              className="w-full border px-4 py-3 rounded-lg mb-4"
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            <button
+              onClick={resetPassword}
+              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700"
+            >
+              Reset Password
+            </button>
+          </>
+        )}
+
+        {message && <p className="text-center mt-4">{message}</p>}
       </div>
     </div>
   );
