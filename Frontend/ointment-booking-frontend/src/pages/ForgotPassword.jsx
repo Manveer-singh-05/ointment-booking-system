@@ -23,7 +23,7 @@ export default function ForgotPassword() {
       await axios.post("http://localhost:4000/auth/reset-password", {
         email,
         otp,
-        newPassword
+        newPassword,
       });
 
       setMessage("Password reset successfully!");
@@ -34,55 +34,95 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white p-10 rounded-xl shadow-xl w-[400px]">
+    <div
+      className="min-h-screen flex justify-center items-center 
+      bg-gradient-to-br from-blue-100 to-gray-200"
+    >
+      <div
+        className="
+          w-[420px] p-10 rounded-3xl shadow-xl 
+          bg-white/20 backdrop-blur-xl 
+          border border-white/40 
+          transition-all duration-300
+        "
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-900">
+          Forgot Password
+        </h2>
 
-        <h2 className="text-2xl font-semibold mb-4 text-center">Forgot Password</h2>
-
+        {/* STEP 1 */}
         {step === 1 && (
           <>
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-full border px-4 py-3 rounded-lg mb-4"
+              className="
+                w-full px-4 py-3 mb-4 rounded-xl border border-white/50 
+                bg-white/40 backdrop-blur-md 
+                focus:ring-2 focus:ring-blue-400 outline-none 
+              "
               onChange={(e) => setEmail(e.target.value)}
             />
 
             <button
               onClick={sendOtp}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+              className="
+                w-full py-3 rounded-xl text-white font-semibold 
+                bg-blue-600 hover:bg-blue-700 
+                shadow-lg hover:shadow-xl 
+                transition-all
+              "
             >
               Send OTP
             </button>
           </>
         )}
 
+        {/* STEP 2 */}
         {step === 2 && (
           <>
             <input
               type="text"
               placeholder="Enter OTP"
-              className="w-full border px-4 py-3 rounded-lg mb-4"
+              className="
+                w-full px-4 py-3 mb-4 rounded-xl border border-white/50 
+                bg-white/40 backdrop-blur-md 
+                focus:ring-2 focus:ring-blue-400 outline-none 
+              "
               onChange={(e) => setOtp(e.target.value)}
             />
 
             <input
               type="password"
               placeholder="New Password"
-              className="w-full border px-4 py-3 rounded-lg mb-4"
+              className="
+                w-full px-4 py-3 mb-4 rounded-xl border border-white/50 
+                bg-white/40 backdrop-blur-md 
+                focus:ring-2 focus:ring-blue-400 outline-none
+              "
               onChange={(e) => setNewPassword(e.target.value)}
             />
 
             <button
               onClick={resetPassword}
-              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700"
+              className="
+                w-full py-3 rounded-xl text-white font-semibold 
+                bg-green-600 hover:bg-green-700 
+                shadow-lg hover:shadow-xl 
+                transition-all
+              "
             >
               Reset Password
             </button>
           </>
         )}
 
-        {message && <p className="text-center mt-4">{message}</p>}
+        {/* Message */}
+        {message && (
+          <p className="text-center mt-4 text-gray-900 font-medium">
+            {message}
+          </p>
+        )}
       </div>
     </div>
   );
