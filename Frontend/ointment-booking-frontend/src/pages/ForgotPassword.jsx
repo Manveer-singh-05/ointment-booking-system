@@ -10,16 +10,34 @@ export default function ForgotPassword() {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
+
+  // const sendOtp = async () => {
+  //   try {
+  //     await axios.post("http://localhost:4000/auth/forgot-password", { email });
+  //     setStep(2);
+  //     setMessage("OTP sent to your email!");
+  //   } catch (err) {
+  //     setMessage("Email not found");
+  //   }
+  // };
   const sendOtp = async () => {
-    try {
-      await axios.post("http://localhost:4000/auth/forgot-password", { email });
-      setStep(2);
-      setMessage("OTP sent to your email!");
-    } catch (err) {
-      setMessage("Email not found");
-    }
-  };
+  try {
+    setLoading(true);      // show loader message
+    setMessage("Sending OTP...");
+
+    await axios.post("http://localhost:4000/auth/forgot-password", { email });
+
+    setStep(2);
+    setMessage("OTP sent to your email!");
+  } catch (err) {
+    setMessage("Email not found");
+  } finally {
+    setLoading(false);    // hide loader
+  }
+};
+
 
   const resetPassword = async () => {
     try {
@@ -34,7 +52,7 @@ export default function ForgotPassword() {
 
       // AUTO REDIRECT AFTER 2 SECONDS
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
       }, 2000);
 
     } catch (err) {
