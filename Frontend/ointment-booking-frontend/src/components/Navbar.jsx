@@ -48,9 +48,8 @@ export default function Navbar() {
         <Link to="/appointments" className="hover:text-blue-300">
           Appointments
         </Link>
-        <li onClick={() => navigate("/contact")} className="cursor-pointer">
-  Contact Us
-</li>
+        <Link to="/contact" className= "hover:text-blue-300 transition">Contact Us</Link>
+       
 
 
         {/* ⭐ ADMIN LINK (visible only if user.role === "admin") */}
