@@ -15,6 +15,10 @@ const adminRoutes = require("./routes/adminRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 
 const serviceRoutes = require("./routes/serviceRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
+
+
+
 
 
 
@@ -22,6 +26,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
 // app.use(fileUpload());
 
 
@@ -40,5 +45,6 @@ app.use("/slots", slotRoutes);
 app.use("/admin", adminRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/services", serviceRoutes);
+app.use("/feedback", feedbackRoutes);
 app.use("/uploads", express.static("uploads"));
 app.listen(4000, () => console.log("Server running on port 4000"));
