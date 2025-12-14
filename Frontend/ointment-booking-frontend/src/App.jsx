@@ -26,6 +26,10 @@ import AdminReviews from "./pages/admin/AdminReviews";
 import AdminProServices from "./pages/admin/AdminProServices";
 import ProfessionalServices from "./pages/ProfessionalServices";
 import ForgotPassword from "./pages/ForgotPassword";
+import ContactUs from "./pages/ContactUs";
+
+
+
 
 function AppLayout() {
   const location = useLocation();
@@ -70,6 +74,7 @@ function AppLayout() {
           }
         />
         <Route path="/appointments" element={<Appointments />} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route
           path="/profile"
           element={
