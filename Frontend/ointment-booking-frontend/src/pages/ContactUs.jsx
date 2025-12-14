@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import bgImage from "../assets/images/contactusf.jpg"; // optional bg
 
 export default function ContactUs() {
@@ -12,15 +13,33 @@ export default function ContactUs() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const submitForm = () => {
-    if (!form.name || !form.email || !form.message) {
-      alert("Please fill all fields");
-      return;
-    }
+  // const submitForm = () => {
+  //   if (!form.name || !form.email || !form.message) {
+  //     alert("Please fill all fields");
+  //     return;
+  //   }
+
+  //   alert("Thank you for your feedback! ❤️");
+  //   setForm({ name: "", email: "", message: "" });
+  // };
+ 
+
+const submitForm = async () => {
+  if (!form.name || !form.email || !form.message) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    await axios.post("http://localhost:4000/feedback", form);
 
     alert("Thank you for your feedback! ❤️");
     setForm({ name: "", email: "", message: "" });
-  };
+  } catch (err) {
+    alert("Failed to submit feedback");
+  }
+};
+
 
   return (
     <div
