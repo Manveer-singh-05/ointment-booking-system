@@ -78,10 +78,10 @@ const submitForm = async () => {
             <div className="mt-6">
               <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
               <div className="flex gap-4 text-2xl">
-                <a href="#" className="hover:text-blue-600">🔗</a>
-                <a href="#" className="hover:text-pink-600">📸</a>
-                <a href="#" className="hover:text-sky-600">🐦</a>
-                <a href="#" className="hover:text-gray-800">💼</a>
+                <a href="https://www.facebook.com/" className="hover:text-blue-600">🔗</a>
+                <a href="https://www.instagram.com/" className="hover:text-pink-600">📸</a>
+                <a href="https://x.com/" className="hover:text-sky-600">🐦</a>
+                <a href="https://www.youtube.com/" className="hover:text-gray-800">💼</a>
               </div>
             </div>
           </div>
