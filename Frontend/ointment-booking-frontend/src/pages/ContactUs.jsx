@@ -55,6 +55,9 @@ const submitForm = async () => {
           w-full max-w-4xl p-10 rounded-3xl 
           bg-white/20 backdrop-blur-2xl 
           border border-white/40 shadow-2xl
+          transition-all duration-500 
+          hover:scale-[1.01]
+            hover:shadow-[0_0_60px_rgba(255,255,255,0.3)]
           float-animation
         "
       >
