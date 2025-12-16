@@ -1,6 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import bgImage from "../assets/images/contactusf.jpg"; // optional bg
+import { FaFacebook } from "react-icons/fa";
+import { FaSquareInstagram } from "react-icons/fa6";
+import { FaXTwitter } from "react-icons/fa6";
+import { FaYoutube } from "react-icons/fa6";
 
 export default function ContactUs() {
   const [form, setForm] = useState({
@@ -78,10 +82,10 @@ const submitForm = async () => {
             <div className="mt-6">
               <h3 className="text-xl font-semibold mb-2">Follow Us</h3>
               <div className="flex gap-4 text-2xl">
-                <a href="https://www.facebook.com/" className="hover:text-blue-600">🔗</a>
-                <a href="https://www.instagram.com/" className="hover:text-pink-600">📸</a>
-                <a href="https://x.com/" className="hover:text-sky-600">🐦</a>
-                <a href="https://www.youtube.com/" className="hover:text-gray-800">💼</a>
+                <a href="https://www.facebook.com/" className="hover:text-blue-600"><FaFacebook /></a>
+                <a href="https://www.instagram.com/" className="hover:text-pink-600"><FaSquareInstagram /></a>
+                <a href="https://x.com/" className="hover:text-sky-600"><FaXTwitter /></a>
+                <a href="https://www.youtube.com/" className="hover:text-gray-800"><FaYoutube /></a>
               </div>
             </div>
           </div>
