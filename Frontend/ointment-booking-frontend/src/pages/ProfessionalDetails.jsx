@@ -9,6 +9,10 @@ export default function ProfessionalDetails() {
   const [pro, setPro] = useState(null);
   const [services, setServices] = useState([]);
 
+  const [showPopup, setShowPopup] = useState(false);
+const [popupText, setPopupText] = useState("");
+
+
   const user = JSON.parse(localStorage.getItem("user")); // ⭐ for admin check
 
   // Fetch Professional Info
@@ -29,6 +33,7 @@ export default function ProfessionalDetails() {
 
   if (!pro)
     return <p className="pt-24 text-center text-gray-600">Loading...</p>;
+  
 
   return (
     <div
@@ -223,7 +228,7 @@ export default function ProfessionalDetails() {
         </div>
 
         {/* CONTACT BUTTONS */}
-        <div className="mt-10 flex gap-4">
+        {/* <div className="mt-10 flex gap-4">
           <button className="flex-1 bg-blue-600 text-white py-3 rounded-xl shadow hover:bg-blue-700 transition">
             📞 Call
           </button>
@@ -231,7 +236,29 @@ export default function ProfessionalDetails() {
           <button className="flex-1 bg-green-600 text-white py-3 rounded-xl shadow hover:bg-green-700 transition">
             ✉ Email
           </button>
-        </div>
+        </div> */}
+        <div className="mt-10 flex gap-4">
+  <button
+    onClick={() => {
+      setPopupText("📞 Call feature is not available yet.");
+      setShowPopup(true);
+    }}
+    className="flex-1 bg-blue-600 text-white py-3 rounded-xl shadow hover:bg-blue-700 transition"
+  >
+    📞 Call
+  </button>
+
+  <button
+    onClick={() => {
+      setPopupText("✉ Email feature is not available yet.");
+      setShowPopup(true);
+    }}
+    className="flex-1 bg-green-600 text-white py-3 rounded-xl shadow hover:bg-green-700 transition"
+  >
+    ✉ Email
+  </button>
+</div>
+
 
         <button
           onClick={() => navigate(`/book/${pro._id}`)}
@@ -245,6 +272,32 @@ export default function ProfessionalDetails() {
       </div>
     </div>
   );
+  {/* 🔔 POPUP MODAL */}
+{showPopup && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div
+      className="
+        bg-white/20 backdrop-blur-2xl 
+        border border-white/40 
+        rounded-3xl p-8 w-[350px] text-center
+        shadow-2xl
+      "
+    >
+      <p className="text-lg font-semibold text-gray-900 mb-6">
+        {popupText}
+      </p>
+
+      <button
+        onClick={() => setShowPopup(false)}
+        className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+)}
+
+  
 }
 // function ReviewList({ professionalId }) {
 //   const [reviews, setReviews] = useState([]);
@@ -363,4 +416,5 @@ function ReviewList({ professionalId }) {
     </div>
   );
 }
+
 
