@@ -269,10 +269,7 @@ const [popupText, setPopupText] = useState("");
         >
           Book Appointment
         </button>
-      </div>
-    </div>
-  );
-  {/* 🔔 POPUP MODAL */}
+        {/* 🔔 POPUP MODAL */}
 {showPopup && (
   <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
     <div
@@ -297,6 +294,9 @@ const [popupText, setPopupText] = useState("");
   </div>
 )}
 
+      </div>
+    </div>
+  );
   
 }
 // function ReviewList({ professionalId }) {
