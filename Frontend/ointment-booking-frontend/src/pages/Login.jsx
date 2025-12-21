@@ -27,7 +27,7 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       if (res.data.user.role === "admin") navigate("/admin");
-      else navigate("/dashboard");
+      else navigate("/home");
 
     } catch (err) {
       setError("Invalid email or password");
