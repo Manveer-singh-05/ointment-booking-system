@@ -10,7 +10,7 @@ const bodyParser = require("body-parser");
 const professionalRoutes = require("./routes/professionalRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const slotRoutes = require("./routes/slotRoutes");
-const authRoutes = require("./routes/authRoutes");  // <-- NEW
+const authRoutes = require("./routes/authRoutes"); 
 const adminRoutes = require("./routes/adminRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 
