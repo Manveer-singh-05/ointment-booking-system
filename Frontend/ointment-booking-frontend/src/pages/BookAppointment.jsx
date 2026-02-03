@@ -96,6 +96,7 @@ export default function BookAppointment() {
           <h3 className="text-xl font-semibold text-gray-900">Select Date</h3>
           <input
             type="date"
+            min={new Date().toISOString().split("T")[0]}
             className="
               mt-3 p-3 rounded-xl border bg-white/60 backdrop-blur-lg 
               shadow-md focus:shadow-lg transition
