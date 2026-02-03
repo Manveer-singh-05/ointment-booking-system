@@ -3,6 +3,7 @@ import appointbgImage from "../assets/images/appointmentback.jpg";
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
+  const [view, setView] = useState("active"); // active | history
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -29,6 +30,10 @@ export default function Appointments() {
       );
     }
   };
+const filteredAppointments =
+  view === "active"
+    ? appointments.filter((a) => a.status !== "cancelled")
+    : appointments.filter((a) => a.status === "cancelled");
 
   return (
     <div
@@ -52,9 +57,35 @@ export default function Appointments() {
         <h1 className="text-4xl font-bold text-gray-900 mb-10 text-center">
           My Appointments
         </h1>
+        <div className="flex justify-center gap-4 mb-8">
+  <button
+    onClick={() => setView("active")}
+    className={`px-6 py-2 rounded-xl font-semibold transition-all
+      ${
+        view === "active"
+          ? "bg-blue-600 text-white shadow-lg"
+          : "bg-white/40 text-gray-800"
+      }`}
+  >
+    Booked Appointments
+  </button>
+
+  <button
+    onClick={() => setView("history")}
+    className={`px-6 py-2 rounded-xl font-semibold transition-all
+      ${
+        view === "history"
+          ? "bg-gray-700 text-white shadow-lg"
+          : "bg-white/40 text-gray-800"
+      }`}
+  >
+    Watch History
+  </button>
+</div>
+
 
         <div className="space-y-6">
-          {appointments.map((appt) => {
+          {filteredAppointments.map((appt) => {
             const pro = appt.professionalId;
             const slot = appt.slotId;
 
@@ -129,7 +160,7 @@ export default function Appointments() {
             );
           })}
 
-          {appointments.length === 0 && (
+          {filteredAppointments.length === 0 && (
             <p className="text-center text-gray-200 text-lg">
               You don’t have any appointments yet.
             </p>
