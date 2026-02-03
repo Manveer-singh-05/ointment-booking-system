@@ -45,7 +45,7 @@ export default function BookAppointment() {
       alert("Appointment booked successfully!");
       navigate("/dashboard");
     } else {
-      alert("Failed to book appointment");
+      alert("the appointment is already booked, please choose another slot.");
     }
   };
 
