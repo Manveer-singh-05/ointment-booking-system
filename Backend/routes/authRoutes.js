@@ -16,7 +16,7 @@ function normalizeUser(userDoc) {
     email: userDoc.email,
     phone: userDoc.phone || "",
     bio: userDoc.bio || "",
-    photo: userDoc.photo || "", // e.g. "/uploads/xxx.jpg"
+    photo: userDoc.photo || "", 
     lastLogin: userDoc.lastLogin || null,
     role: userDoc.role || "user",
   };

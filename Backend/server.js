@@ -38,7 +38,7 @@ mongoose
 .catch((err) => console.log(err));
 
 // Routes
-app.use("/auth", authRoutes);                    // <-- ADD THIS
+app.use("/auth", authRoutes);                    
 app.use("/professionals", professionalRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/slots", slotRoutes);
