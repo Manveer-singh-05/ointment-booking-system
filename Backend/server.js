@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 // const fileUpload = require("express-fileupload");
 
 
-
+require("dotenv").config();
 
 const professionalRoutes = require("./routes/professionalRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
@@ -32,10 +32,14 @@ app.use(bodyParser.json());
 
 
 // MongoDB Connection
+// mongoose
+// .connect("mongodb://127.0.0.1:27017/appointmentDB")
+// .then(() => console.log("MongoDB connected"))
+// .catch((err) => console.log(err));
 mongoose
-.connect("mongodb://127.0.0.1:27017/appointmentDB")
-.then(() => console.log("MongoDB connected"))
-.catch((err) => console.log(err));
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected to Atlas"))
+  .catch((err) => console.log(err));
 
 // Routes
 app.use("/auth", authRoutes);                    
