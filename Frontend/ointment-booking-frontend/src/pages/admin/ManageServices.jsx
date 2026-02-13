@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import adminBg from "../../assets/images/manageservicef.jpg";
+import { API_URL } from "../../api";
 
 export default function ManageServices() {
   const [services, setServices] = useState([]);
@@ -14,12 +15,12 @@ export default function ManageServices() {
   const [editingId, setEditingId] = useState(null);
 
   // ✅ Correct API base URL
-  const API = "http://localhost:4000/admin/services";
+  const API = `${API_URL}/admin/services`;
 
   // Load all professionals
   const loadProfessionals = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/professionals");
+      const res = await axios.get(`${API_URL}/professionals`);
       setProfessionals(res.data);
     } catch (err) {
       console.log("Error loading professionals:", err);
@@ -30,7 +31,7 @@ export default function ManageServices() {
   const loadServices = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4000/admin/services-all",
+        `${API_URL}/admin/services-all`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }

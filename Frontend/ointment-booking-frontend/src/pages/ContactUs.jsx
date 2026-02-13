@@ -5,7 +5,7 @@ import { FaFacebook } from "react-icons/fa";
 import { FaSquareInstagram } from "react-icons/fa6";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaYoutube } from "react-icons/fa6";
-
+import { API_URL } from "../api";
 export default function ContactUs() {
   const [form, setForm] = useState({
     name: "",
@@ -35,7 +35,7 @@ const submitForm = async () => {
   }
 
   try {
-    await axios.post("http://localhost:4000/feedback", form);
+    await axios.post(`${API_URL}/feedback`, form);
 
     alert("Thank you for your feedback! ❤️");
     setForm({ name: "", email: "", message: "" });

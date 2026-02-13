@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import EditProfileModal from "../components/EditProfileModal";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 import bgImage from "../assets/images/profilef.jpg";
-
+import { API_URL } from "../api";
 export default function Profile() {
   const [user, setUser] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
@@ -35,7 +35,7 @@ export default function Profile() {
 
     return user.photo.startsWith("http")
       ? user.photo
-      : `http://localhost:4000${user.photo}`;
+      : `${API_URL}${user.photo}`;
   };
 
   return (

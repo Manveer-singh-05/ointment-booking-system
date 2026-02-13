@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import signupBg from "../assets/images/loginf.jpg"; // using same bg for theme
+import { API_URL } from "../api";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/auth/signup", user);
+      // const res = await axios.post("http://localhost:4000/auth/signup", user);
+
+      const res = await axios.post(`${API_URL}/auth/signup`, user);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));

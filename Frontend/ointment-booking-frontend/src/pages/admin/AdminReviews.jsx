@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import adminBg from "../../assets/images/managereviewf.jpg";
+import { API_URL } from "../../api";
 
 export default function AdminReviews() {
   const [reviews, setReviews] = useState([]);
@@ -8,7 +9,7 @@ export default function AdminReviews() {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/admin/reviews", {
+      const res = await axios.get(`${API_URL}/admin/reviews`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
@@ -24,7 +25,7 @@ export default function AdminReviews() {
     if (!confirm("Are you sure you want to delete this review?")) return;
 
     try {
-      await axios.delete(`http://localhost:4000/admin/reviews/${id}`, {
+      await axios.delete(`${API_URL}/admin/reviews/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 

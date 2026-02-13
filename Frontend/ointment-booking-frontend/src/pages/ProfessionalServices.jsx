@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import bgImage from "../assets/images/bookingservicef.jpg";
-
+import { API_URL } from "../api";
 export default function ProfessionalServices() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -9,11 +9,11 @@ export default function ProfessionalServices() {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:4000/professionals/${id}`)
+    fetch(`${API_URL}/professionals/${id}`)
       .then((res) => res.json())
       .then((data) => setPro(data));
 
-    fetch(`http://localhost:4000/services/${id}`, {
+    fetch(`${API_URL}/services/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((res) => res.json())

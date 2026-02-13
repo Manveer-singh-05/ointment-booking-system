@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import dashbgImage from "../assets/images/dashboardf.jpg";
+import { API_URL } from "../api";
 
 export default function Dashboard() {
   const [professionals, setProfessionals] = useState([]);
@@ -10,7 +11,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:4000/professionals")
+    fetch(`${API_URL}/professionals`)
       .then((res) => res.json())
       .then((data) => setProfessionals(data))
       .catch((err) => console.log(err));

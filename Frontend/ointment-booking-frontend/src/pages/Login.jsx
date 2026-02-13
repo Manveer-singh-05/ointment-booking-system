@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import loginbgImage from "../assets/images/loginf.jpg";
-
+import { API_URL } from "../api";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/auth/login", {
+      const res = await axios.post(`${API_URL}/auth/login`, {
         email,
         password,
       });

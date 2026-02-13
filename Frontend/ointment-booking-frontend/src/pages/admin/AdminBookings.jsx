@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import adminBg from "../../assets/images/viewallbookingsf.jpg";
-
+import { API_URL } from "../../api";
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/admin/bookings", {
+      const res = await axios.get(`${API_URL}/admin/bookings`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       });
 
@@ -27,7 +27,7 @@ export default function AdminBookings() {
   const updateStatus = async (id, status) => {
     try {
       await axios.put(
-        `http://localhost:4000/admin/bookings/${id}`,
+        `${API_URL}/admin/bookings/${id}`,
         { status },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import adminBg from "../../assets/images/editprofessionalf.jpg";
+import { API_URL } from "../../api";
 
 export default function EditProfessional() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export default function EditProfessional() {
   useEffect(() => {
     const fetchPro = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/professionals/${id}`);
+        const res = await axios.get(`${API_URL}/professionals/${id}`);
 
         setForm({
           name: res.data.name,
@@ -39,7 +40,7 @@ export default function EditProfessional() {
           res.data.image
             ? (res.data.image.startsWith("http")
                 ? res.data.image
-                : `http://localhost:4000${res.data.image}`)
+                : `${API_URL}${res.data.image}`)
             : defaultPhoto
         );
 
@@ -101,7 +102,7 @@ if (file) {
       //   }
       // );
       await axios.put(
-  `http://localhost:4000/admin/professionals/${id}`,
+  `${API_URL}/admin/professionals/${id}`,
   formData,
   {
     headers: {
@@ -137,7 +138,7 @@ const handleDelete = async () => {
   if (!window.confirm("Are you sure? This cannot be undone.")) return;
 
   try {
-    await axios.delete(`http://localhost:4000/admin/professionals/${id}`, {
+    await axios.delete(`${API_URL}/admin/professionals/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import bgImage from "../assets/images/bookappointmentf.jpg";
+import { API_URL } from "../api";
 export default function BookAppointment() {
   const { professionalId } = useParams();
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function BookAppointment() {
 
   // Fetch professional details
   useEffect(() => {
-    fetch(`http://localhost:4000/professionals/${professionalId}`)
+    fetch(`${API_URL}/professionals/${professionalId}`)
       .then((res) => res.json())
       .then((data) => setProfessional(data))
       .catch((err) => console.log(err));
@@ -35,7 +36,7 @@ export default function BookAppointment() {
       userId: JSON.parse(localStorage.getItem("user"))?.id,
     };
 
-    const res = await fetch("http://localhost:4000/bookings", {
+    const res = await fetch(`${API_URL}/bookings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(bookingData),

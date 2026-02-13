@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api";
 
 function Slots() {
   const pro = JSON.parse(localStorage.getItem("selectedProfessional"));
@@ -8,12 +9,12 @@ function Slots() {
 
   const fetchSlots = async () => {
     if (!date) return;
-    const res = await axios.get(`http://localhost:4000/slots/${pro._id}/${date}`);
+    const res = await axios.get(`${API_URL}/slots/${pro._id}/${date}`);
     setSlots(res.data);
   };
 
   const bookSlot = async (slotId) => {
-    await axios.post("http://localhost:4000/slots/book", { slotId });
+    await axios.post(`${API_URL}/slots/book`, { slotId });
     alert("Slot booked successfully!");
     fetchSlots(); // reload
   };

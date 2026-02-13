@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import { API_URL } from "../../api";
 export default function AdminProServices() {
   const { id } = useParams(); // professional ID
   const [pro, setPro] = useState(null);
@@ -15,7 +15,7 @@ export default function AdminProServices() {
 
   // Load professional details
   useEffect(() => {
-    axios.get(`http://localhost:4000/professionals/${id}`)
+    axios.get(`${API_URL}/professionals/${id}`)
       .then(res => setPro(res.data));
   }, [id]);
 
@@ -23,7 +23,7 @@ export default function AdminProServices() {
   const loadServices = async () => {
     const token = localStorage.getItem("token");
     const res = await axios.get(
-      `http://localhost:4000/api/admin/services/${id}`,
+      `${API_URL}/api/admin/services/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
@@ -46,7 +46,7 @@ export default function AdminProServices() {
 
     if (editingId) {
       await axios.put(
-        `http://localhost:4000/api/admin/services/${editingId}`,
+        `${API_URL}/api/admin/services/${editingId}`,
         {
           name: form.name,
           duration: form.duration,
@@ -56,7 +56,7 @@ export default function AdminProServices() {
       );
     } else {
       await axios.post(
-        `http://localhost:4000/api/admin/services`,
+        `${API_URL}/api/admin/services`,
         {
           professionalId: id,
           name: form.name,
@@ -78,7 +78,7 @@ export default function AdminProServices() {
     if (!window.confirm("Delete this service?")) return;
 
     await axios.delete(
-      `http://localhost:4000/api/admin/services/${sid}`,
+      `${API_URL}/api/admin/services/${sid}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
 

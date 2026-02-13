@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../api";
 
 export default function ChangePasswordModal({ onClose }) {
   const [oldPassword, setOldPassword] = useState("");
@@ -16,7 +17,7 @@ export default function ChangePasswordModal({ onClose }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:4000/auth/change-password",
+        `${API_URL}/auth/change-password`,
         { oldPassword, newPassword },
         {
           headers: {

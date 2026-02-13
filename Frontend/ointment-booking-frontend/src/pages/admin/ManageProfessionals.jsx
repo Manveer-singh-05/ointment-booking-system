@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import adminBg from "../../assets/images/manageprofessionalf.jpg"; // background for theme
+import { API_URL } from "../../api";
 
 export default function ManageProfessionals() {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function ManageProfessionals() {
       return;
     }
 
-    fetch("http://localhost:4000/professionals")
+    fetch(`${API_URL}/professionals`)
       .then((res) => res.json())
       .then((data) => setPros(data))
       .catch((err) => console.log(err));
@@ -25,7 +26,7 @@ export default function ManageProfessionals() {
 
     const token = localStorage.getItem("token");
 
-    await fetch(`http://localhost:4000/admin/professionals/${id}`, {
+    await fetch(`${API_URL}/admin/professionals/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -95,7 +96,7 @@ export default function ManageProfessionals() {
   pro.image
     ? (pro.image.startsWith("http")
         ? pro.image
-        : `http://localhost:4000${pro.image}`)
+        : `${API_URL}${pro.image}`)
     : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
 }
 

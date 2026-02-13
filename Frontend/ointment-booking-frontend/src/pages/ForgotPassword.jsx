@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import bgImage from "../assets/images/forgotpasswordf.jpg";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../api";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function ForgotPassword() {
     setLoading(true);      // show loader message
     setMessage("Sending OTP...");
 
-    await axios.post("http://localhost:4000/auth/forgot-password", { email });
+    await axios.post(`${API_URL}/auth/forgot-password`, { email });
 
     setStep(2);
     setMessage("OTP sent to your email!");
@@ -41,7 +42,7 @@ export default function ForgotPassword() {
 
   const resetPassword = async () => {
     try {
-      await axios.post("http://localhost:4000/auth/reset-password", {
+      await axios.post(`${API_URL}/auth/reset-password`, {
         email,
         otp,
         newPassword,

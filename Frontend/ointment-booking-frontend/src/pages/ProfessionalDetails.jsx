@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import bgImage from "../assets/images/professionalprofilef.jpg";
+import { API_URL } from "../api";
 
 export default function ProfessionalDetails() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const [popupText, setPopupText] = useState("");
 
   // Fetch Professional Info
   useEffect(() => {
-    fetch(`http://localhost:4000/professionals/${id}`)
+    fetch(`${API_URL}/professionals/${id}`)
       .then((res) => res.json())
       .then((data) => setPro(data))
       .catch((err) => console.log(err));
@@ -25,7 +26,7 @@ const [popupText, setPopupText] = useState("");
 
   // Fetch Services of this Professional (PUBLIC route)
   useEffect(() => {
-    fetch(`http://localhost:4000/services/${id}`)
+    fetch(`${API_URL}/services/${id}`)
       .then((res) => res.json())
       .then((data) => setServices(data))
       .catch((err) => console.log(err));
@@ -197,7 +198,7 @@ const [popupText, setPopupText] = useState("");
                   if (!services.userRating || !services.userComment)
                     return alert("Please provide rating & review.");
 
-                  const res = await fetch("http://localhost:4000/reviews", {
+                  const res = await fetch(`${API_URL}/reviews`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -354,7 +355,7 @@ function ReviewList({ professionalId }) {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:4000/reviews/${professionalId}`)
+    fetch(`${API_URL}/reviews/${professionalId}`)
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, [professionalId]);
@@ -374,7 +375,7 @@ function ReviewList({ professionalId }) {
             <img
               src={
                 r.userId?.photo && r.userId.photo.trim() !== ""
-                  ? `http://localhost:4000${r.userId.photo}`
+                  ? `${API_URL}${r.userId.photo}`
                   : "https://cdn-icons-png.flaticon.com/512/847/847969.png"
               }
               className="w-8 h-8 rounded-full object-cover shadow"

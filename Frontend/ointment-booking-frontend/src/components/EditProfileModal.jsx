@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-
+import { API_URL } from "../api";
 export default function EditProfileModal({ user, onClose, onUpdate }) {
 
   const defaultPhoto = "https://cdn-icons-png.flaticon.com/512/848/848006.png";
@@ -9,7 +9,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
     user?.photo
       ? (user.photo.startsWith("http")
           ? user.photo
-          : `http://localhost:4000${user.photo}`)
+          : `${API_URL}${user.photo}`)
       : defaultPhoto;
 
   const [name, setName] = useState(user?.name);
@@ -32,7 +32,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
 
     try {
       const res = await axios.put(
-        "http://localhost:4000/auth/update-profile",
+        `${API_URL}/auth/update-profile`,
         formData,
         {
           headers: {
@@ -48,7 +48,7 @@ export default function EditProfileModal({ user, onClose, onUpdate }) {
         updated.photo =
           updated.photo.startsWith("http")
             ? updated.photo
-            : `http://localhost:4000${updated.photo}`;
+            : `${API_URL}${updated.photo}`;
       }
 
       localStorage.setItem("user", JSON.stringify(updated));

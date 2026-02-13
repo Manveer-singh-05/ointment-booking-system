@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import bgImage from "../../assets/images/addprofessionalf.jpg";
+import { API_URL } from "../../api";
 export default function AddProfessional() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -20,7 +21,7 @@ export default function AddProfessional() {
 
     const token = localStorage.getItem("token");
 
-    await fetch("http://localhost:4000/admin/professionals", {
+    await fetch(`${API_URL}/admin/professionals`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import appointbgImage from "../assets/images/appointmentback.jpg";
+import { API_URL } from "../api";
 
 export default function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -9,7 +10,7 @@ export default function Appointments() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return;
 
-    fetch(`http://localhost:4000/bookings/user/${user.id}`)
+    fetch(`${API_URL}/bookings/user/${user.id}`)
       .then((res) => res.json())
       .then((data) => setAppointments(data))
       .catch((err) => console.log(err));
@@ -17,7 +18,7 @@ export default function Appointments() {
 
   const cancelBooking = async (bookingId) => {
     const res = await fetch(
-      `http://localhost:4000/bookings/cancel/${bookingId}`,
+      `${API_URL}/bookings/cancel/${bookingId}`,
       { method: "PUT" }
     );
 
