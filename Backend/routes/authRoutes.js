@@ -6,7 +6,9 @@ const authMiddleware = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // multer storage wrapper
 
 const router = express.Router();
-const JWT_SECRET = "your-secret-key";
+// const JWT_SECRET = "your-secret-key";
+require("dotenv").config();
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Helper to normalize user shape returned to frontend
 function normalizeUser(userDoc) {
@@ -41,7 +43,7 @@ router.post("/signup", async (req, res) => {
     });
 
     // create token and return normalized user (frontend expects token on signup)
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
       message: "Signup successful",
@@ -146,8 +148,8 @@ const crypto = require("crypto");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "manveersingh0501l@gmail.com",
-    pass: "jrgxpaykzhromudt"
+    user: process.env.EMAIL_USER,
+    pass:  process.env.EMAIL_PASS
   }
 });
 
