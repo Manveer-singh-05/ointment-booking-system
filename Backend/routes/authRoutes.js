@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // multer storage wrapper
+const sgMail = require("@sendgrid/mail");
+
 
 const router = express.Router();
 // const JWT_SECRET = "your-secret-key";
@@ -145,13 +147,14 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
 // EMAIL CONFIG
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass:  process.env.EMAIL_PASS
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass:  process.env.EMAIL_PASS
+//   }
+// });
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // ---------------- FORGOT PASSWORD ----------------
 router.post("/forgot-password", async (req, res) => {
@@ -170,12 +173,19 @@ router.post("/forgot-password", async (req, res) => {
     await user.save();
 
     // SEND EMAIL
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Password Reset OTP",
-      text: `Your password reset OTP is ${otp}. It expires in 10 minutes.`
-    });
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to: email,
+    //   subject: "Password Reset OTP",
+    //   text: `Your password reset OTP is ${otp}. It expires in 10 minutes.`
+    // });
+    await sgMail.send({
+  to: email,
+  from: process.env.EMAIL_USER, // verified sender
+  subject: "Password Reset OTP",
+  text: `Your password reset OTP is ${otp}. It expires in 10 minutes.`,
+});
+
 
     res.json({ message: "OTP sent to your email" });
   } catch (err) {
